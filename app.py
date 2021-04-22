@@ -130,7 +130,7 @@ def api_attractions():
 		
 		return jsObj
 
-@app.route("/api/attractions/<attractionId>",methods=["GET"])
+@app.route("/api/attraction/<attractionId>",methods=["GET"])
 def api_attractions_id(attractionId):
 	id = attractionId
 
