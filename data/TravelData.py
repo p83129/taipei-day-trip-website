@@ -11,7 +11,7 @@ mydb = mysql.connector.connect(
 )
 
 #讀檔
-path = "D://training/git/project-1/taipei-day-trip-website/data/taipei-attractions.json"
+path = "taipei-attractions.json"
 with open(path, encoding="utf-8") as json_file:
     data = json.load(json_file)
 lst = data["result"]
