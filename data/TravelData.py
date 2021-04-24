@@ -35,6 +35,6 @@ for val in lst["results"]:
         cursor.execute(sql, val)
         mydb.commit()   
 
-print("完成")
+print("完成") 
 
 
