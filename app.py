@@ -188,7 +188,4 @@ def api_attractions_id(attractionId):
 		return jsObj
 
 
-			
-
-
 app.run(host="0.0.0.0", port=3000)
