@@ -1,7 +1,7 @@
 from flask import *
 import mysql.connector
 
-app=Flask(__name__)
+app=Flask(__name__, static_url_path="/", static_folder="image")
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 
@@ -31,42 +31,67 @@ mydb = mysql.connector.connect(
 
 @app.route("/api/attractions",methods=["GET"])
 def api_attractions():
-	page = request.args.get("page")
+	page = request.args.get("page", "0")
 	keyword = request.args.get("keyword")
 	#print(keyword)
-	with mydb.cursor() as cursor:
-		sql = ""
-		val = ""		
-		data_info = ""
-		jsObj = ""
 
-		if(keyword == "" or keyword == None):
-			sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel "
+	sql = ""
+	val = ""		
+	data_info = ""
+	jsObj = ""
+	num = 0
+	#result
+
+	#分頁運算
+	Pagecount = 12		
+	firstPage = 0
+	#lastPage = 12
+	if int(page) > 0:
+		firstPage = (int(page) * Pagecount)
+		#lastPage = (lastPage *int(page)) + Pagecount
+	
+	with mydb.cursor() as cursor:		
+
+		if(keyword == "" or keyword == None):			
+			sql = "Select Count(*) From travel"
 		else:
-			sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel Where stitle Like '%" + keyword + "%'"        
-			#val = (keyword,)
-		
+			sql = "Select Count(*) From travel Where stitle Like '%" + keyword + "%'"        
+
 		cursor.execute(sql)
-		result = cursor.fetchall()
+		count = cursor.fetchall()
+
+		for c in count:
+			num = int(c[0])
 
 		mydb.close #關資料庫
-
-		#分頁運算
-		Pagecount = 12
-		totalPage = int(len(result)/Pagecount)
-		firstPage = 0
-		lastPage = 12
-		if int(page) > 0:
-			firstPage = (int(page) * Pagecount)
-			lastPage = (lastPage *int(page)) + Pagecount	
 		
+	with mydb.cursor() as cursor:
+		if(keyword == "" or keyword == None):
+			#sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel "				
+			sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel Limit " + str(firstPage) + ", 12"
+		else:
+			#sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel Where stitle Like '%" + keyword + "%'"
+			sql = "Select _id, stitle, CAT2, xbody, Address, info, MRT, latitude, longitude, file From travel Where stitle Like '%" + keyword + "%' Limit " + str(firstPage) + ", 12"        
+			#val = (keyword,)
+		#print("~~~~~~~~~~~~~~~~~~~~~~", sql)
+		cursor.execute(sql)
+		result = cursor.fetchall()
+		mydb.close #關資料庫
+
+
+
+		#總頁數			
+		totalPage = int(num/Pagecount)
+		#print("總頁數", str(totalPage))
+		#print("nnnnnnnnnnnn", str(num))
 
 		
 		if(len(result) > 0 and int(page) <= totalPage):
 			json_array =[]
 
 
-			for row in result[firstPage:lastPage]:
+			#for row in result[firstPage:lastPage]:
+			for row in result:
 				img=""
 				json_list = {}
 
