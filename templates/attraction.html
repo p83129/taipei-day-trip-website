@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="utf-8" /></meta>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=1.0" />
+		<title> HomeWork1</title>
+		<style type="text/css">
+		.head{			
+			color:black;
+			font-weight:bold;
+			font-size:40px;
+			text-align:center;			
+			height:320px;			
+			line-height:300px;
+			width: 1200px;
+			margin-left:auto;
+			margin-right:auto;
+			margin-top: 15px;
+						
+		}
+		.content{
+			width:1200px;
+			margin-left:auto;
+			margin-right:auto;
+		}
+		.box{
+			width:250px;			
+			
+			margin:15px;
+			display:flex;
+			flex-direction: column;
+			verticcal-align:top;			
+			
+			float: left;
+			
+			border:1px solid #E8E8E8;
+			border-radius:5px;
+			box-sizing: border-box;
+		}
+		.site{
+			float:right;
+			
+			
+		}
+		.text{
+			font-size:16px;
+			color: #757575;
+			font-weight: bold;
+			line-height: 13px;			
+			padding-top:10px;
+			padding-bottom:10px;
+			padding-left:10px;
+		}
+		.img{
+			display: block;
+			weight:100%;
+			height:75%;
+			
+			border-top-left-radius:5px;
+			border-top-right-radius:5px;
+			
+		}
+		.menu{
+			float: right;
+			margin: 0px;	
+		}
+		.menu li{
+			float: left;
+			display: block;			
+		}
+		.menu li a{
+			color:black;
+			text-decoration: none;
+			display:inline;
+		}
+		.showmenu{
+			display:none;
+		}
+		.view{
+			display:flex;
+			justify-content:center;
+			flex-wrap:wrap;
+			margin-top:20px;
+		}
+		
+		
+		.title{
+			margin:10px 0px;
+			color:#448899;
+			font-size:30px;
+			font-weight:bold;
+			line-height:34px;
+		}
+		.titleall{
+			display: flex;
+			margin-left: 14%;
+			margin-right: 15%;
+		}
+		.mintitle1{
+			margin-top: 20px;
+			color:#666666;
+			font-size:16px;			
+			line-height:13px;
+			position:relative;
+			left:70%;
+		}
+		.bottommsg{
+			background: #757575;
+			height:104px;
+			color:#FFFFFF;
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 13px;
+			text-align:center;
+			margin-top: 30px;
+		}		
+		.bottommsg2{	
+			position: relative;    
+			top: 50%;
+		}
+		
+		.Item{
+			background:#E8E8E8;			
+			height: 245px;
+			border-radius: 5px;
+		}
+		.Item-content{
+			margin:15px;
+			font-size: 16px;
+			line-height: 13px;
+			color: #666666;			
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 16px;
+			line-height: 35px;			
+			align-items: center;
+			text-align: left;
+			padding-top: 15px;
+			padding-left: 10px;
+			font-weight: bold;
+		}
+		.imgdiv{			
+			width: 400px;
+			height: 320px;
+			float:left;
+			position:relative;
+			margin-top:20px;
+			left:130px;
+			overflow: hidden;
+		}
+		.list{
+			position: absolute;
+            z-index: 1;
+            width: 4200px;
+            height: 320px;
+		}
+		.imgsize{
+			float: left;
+
+
+			width: 400px;
+			height: 320px;
+			border-radius: 5px;
+		}
+		.Itemdiv{
+			width: 600px;
+			height: 320px;
+			font-size: 16px;
+			line-height: 13px;
+			position: relative;
+			float: left;
+			margin-top: 20px;
+			margin-left: 110px;
+			left:70px;
+		}
+		.text1{
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: bold;
+			font-size: 24px;
+			line-height: 24px;
+			display: flex;
+			align-items: center;
+		}
+		.text2{
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 16px;
+			line-height: 13px;
+			display: flex;
+			align-items: center;
+		}
+		.btn{
+			background: #448899;
+			border-radius: 5px;
+			padding:10px 20px;
+			color:#FFFFFF;
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 19px;
+			line-height: 16px;			
+			align-items: center;
+			text-align: center;
+			border:none;
+		}
+		.demoHidden{
+		   display: none;
+		}
+		.radioInput{
+		    display: inline-block;
+			background: #FFFFFF;
+			border: none;
+			width: 15px;
+			height: 15px;
+			border-radius: 100%;
+			margin-right: 2px;
+			vertical-align: middle;
+		}
+		.demoHidden:checked + .radioInput:after{
+		    content: "";
+			display: inline-block;
+			width: 12px;
+			height: 12px;
+			background: #448899;
+			border-radius: 100%;
+			margin-bottom: 9px;
+			margin-left: 2px;
+		}
+		.demoHidden:checked + .radioInput{
+		   border:none;
+		}
+		.hr{			
+			width:1200px;
+			margin-top:40px;		
+		}
+		.content_body{
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 16px;
+			line-height: 23px;
+			color: #666666;
+		}
+		.title_body{
+			font-weight: bold;
+		}
+		.ul_slides {
+			position: relative;
+			width: 600px;
+			height: 300px;
+			list-style: none;
+			margin: 0;
+			padding: 0;			
+			overflow: hidden;
+		}
+		.li_slide {
+			margin: 0;
+			padding: 0;
+			width: inherit;
+			height: inherit;
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-family: Helvetica;
+			font-size: 120px;			
+			transition: .5s transform ease-in-out;
+		}
+		.next{
+			position: absolute;
+			width: 40px;
+			height: 70px;
+			right: 0px;
+			left:500px;
+			top: 50%;
+			margin-top: -35px;
+			background-position: -46px 0px;
+		}
+		.prev{
+			position: absolute;			
+			width: 40px;
+			height: 70px;
+			left: 65px;			
+			top: 50%;
+			margin-top: -35px;
+			background-position: 0px 0px;
+		}
+		.btn_right {
+            position: absolute;
+            top: 180px;
+            z-index: 1;
+            display: none;
+            width: 40px;
+            height: 40px;
+			top:50%;
+			margin-left: 340px;
+            background: url(/btn_rightArrow.png) no-repeat;
+            cursor: pointer;
+            display: block;
+        }
+		.btn_left {
+			position: absolute;
+            top: 180px;
+            z-index: 1;
+            display: none;
+            width: 40px;
+            height: 40px;
+			top:50%;
+			margin-left: 20px;
+            background: url(/btn_leftArrow.png) no-repeat;
+            cursor: pointer;
+            display: block;
+		}
+		@media screen and (max-width:600px){
+			.head{
+				font-size:40px;
+				width:90%;
+				height:755px;
+				margin-top: 0px;
+			}
+			.content{
+				width:90%;
+				/*text-align:center;*/
+			}
+			ul{
+				display: none;
+			}
+			label{
+				display: block;
+			}
+			#burger:checked + ul{
+				display:block;
+			}
+			.showmenu{
+				display: block;
+				float: right;
+				
+			}		
+			.menu {       
+				display: none; 
+				margin-top: 0;
+				padding-left: 0;
+				position: fixed;
+				right: 0;
+				top: 40px;
+				width: 60px;
+				height: 100%;
+			}
+			.menu li{
+				float: none;
+		
+			}
+			.menu li a{
+				transition: all 0.3s;
+			}	
+			.box{
+				width:90%;
+				height: 90%;
+			}
+			.title{
+				margin-left: 10%;
+				white-space: nowrap;
+			}
+			.inputtxt{
+				width:200px;
+			}
+			.mintitle1{
+				left:10%;
+				white-space:nowrap;
+			}
+			.titleall{
+				margin-left:0%;
+			}
+			.introduction1{
+				width:290px;
+			}
+			.introduction2{
+				width:290px;
+			}
+			.introduction3{
+				width:320px;
+				margin-right: 0%;
+			}
+			.introduction4{
+				width:275px;
+				height: 150px;
+				bottom: 180px;
+				left: 35px;
+				margin-left:0%;
+			}
+			.img1{
+				width:200px;
+				height:100px;
+			}
+			.outside{
+				margin-left: 20px;
+			}
+			.hr{			
+				width:350px;
+				margin-top:15px;			
+			}
+			.imgdiv{			
+				width: 360px;
+				height: 350px;
+				left:0px;
+			}
+			.imgsize{
+				width: 360px;
+				height: 350px;
+			}
+			.Itemdiv{
+				margin-top:20px;
+				margin-left:0px;
+				position:initial;
+				width:100%;
+				
+			}
+			.Item{
+				width:340px;
+				height:300px;
+			}
+			.Item-content{
+				line-height:25px;
+			}
+			.btn_right {
+				margin-left: 300px;
+        	}
+
+		}
+		@media screen and (min-width:601px) and (max-width:1200px){
+			.head{
+				font-size:40px;
+			}
+			.content{
+				width:90%;
+				/*text-align:center;*/
+			}
+			.box{
+				width:35%;
+			}
+		}
+		
+		
+		</style>
+		<script type="text/javascript">
+		
+		function Money(value){			
+			if(value=='AM'){			
+				document.getElementById("money1").innerHTML  = '新台幣2000元';
+			}
+			else{			
+				document.getElementById("money1").innerHTML  = '新台幣2500元';
+			}
+			
+		}
+		
+		window.onload =function() {
+			//alert('location.pathname: '+location.pathname);
+			var id = location.pathname.substr(12);
+			//alert(id);
+			let req=new XMLHttpRequest();
+			req.open("get", "/api/attraction/" + id);
+			req.onload=function(){
+			//debugger;
+				var jsonObj = JSON.parse(this.responseText);
+				var value = jsonObj["data"];
+				console.log(value)
+				var stitle;
+				var pic;
+				var pic_new;
+				var mrt;
+				var cat2;
+				var xbody = value["description"];
+				var Address = value["address"];
+				var info = value["transport"];
+
+				stitle=value["name"];
+				mrt=value["mrt"];
+				cat2=value["category"];
+
+				pic=value["images"][0].split(',');
+				pic_count=pic.length;				
+					
+				document.getElementById('titalname').innerHTML = stitle;
+				document.getElementById('category').innerHTML = cat2;
+				document.getElementById('description').innerHTML = xbody;
+				document.getElementById('address').innerHTML = Address;
+				document.getElementById('transport').innerHTML = info;
+				//document.getElementById('images').src = pic_new;
+
+				//alert("開始輪播");
+				
+				for(var i=0; i<pic.length; i++){
+					var divlist = document.getElementById('list');					
+					var img = document.createElement('img');					
+					img.className = 'imgsize';
+					img.setAttribute("src", pic[i]);
+					divlist.appendChild(img);				
+
+				}	
+				var divlist = document.getElementById('list');					
+				var img = document.createElement('img');					
+				img.className = 'imgsize';
+				img.setAttribute("src", pic[0]);
+				divlist.appendChild(img);					
+					
+			};
+			req.send();//送出連線
+
+			//var allBoxs = ulimg.children;
+			var list = document.getElementById('list');
+			var next = document.getElementById('next');
+			var prev = document.getElementById('prev');
+			var imgdiv = document.getElementById("imgdiv").offsetWidth;
+			//alert(imgdiv);
+			//顯示第一張圖片
+			list.style.left = 0 + 'px';
+			function animate(offset){
+				var newLeft = parseInt(list.style.left) + offset;
+				list.style.left = newLeft + 'px';
+				//滾動判斷
+				
+				if (newLeft > -imgdiv) {
+					list.style.left = -imgdiv * (pic_count) + 'px';
+				}
+				if (newLeft < -imgdiv * (pic_count)) {
+					list.style.left = -imgdiv + 'px';
+				}				
+			}	
+			
+			next.onclick = function(){
+				animate(imgdiv);
+			}
+			prev.onclick = function(){
+				animate(-imgdiv);
+			}
+		}
+
+		
+		
+		</script>
+	</head>
+	<body style="margin:0px;" >
+	<div class="titleall">
+		<div class="title">
+			<span >台北一日遊</span>
+		</div>
+		<div class="mintitle1">
+			<span >預定行程</span>
+			&nbsp
+			<span>登入/註冊</span>
+		</div>		
+	</div>
+	<hr size="1" noshade color="#E8E8E8" ></hr>
+	<div class="head">
+		<div class="imgdiv" id="imgdiv">
+			<div id="list" style="left:-400px;" class="list"></div>
+			<a href="javascript:;" id="prev" class="btn_right" style="text-decoration:none;"></a>
+            <a href="javascript:;" id="next"  class="btn_left" style="text-decoration:none;"></a>
+			
+		</div>
+		<div class="Itemdiv">
+			<div>
+				<span class="text1" id="titalname">平安鐘</span>	
+				<br>				
+				<span class="text2" id="category">公共藝術</span>
+			</div>
+			<div class="Item">
+				<div class="Item-content">
+					<span>訂購導覽行程</span>
+					<br>
+					<span style="font-weight: normal;">以此景點為中心的一日行程，帶你探索城市角落故事</span>
+					<br>
+					<span>選擇日期:</span>
+						<input type="date" placeholder="YYYY-MM-DD"></input>
+					<br>
+					<span>選擇時間:</span>
+						<label>
+							<input type="radio" checked name="daytime" class="demoHidden" onclick="Money('AM')">
+								<span class="radioInput"></span>上半天 
+						</label>
+						<label>
+							<input type="radio" name="daytime" class="demoHidden" onclick="Money('PM')">
+							  <span class="radioInput"></span>下半天 
+						</label>
+					<br>
+					<span>導覽費用:</span>
+						<span id="money1" style="font-weight:normal;">新台幣2000元</span>
+					<br>
+					<button class="btn">開始預訂行程</button>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<hr class="hr" size="1" align="center" noshade color="#E8E8E8" ></hr>
+	
+	<div class="content" >	
+		
+		<div class="content_body" style="margin-top: 30px;" id="description"></div>
+		<br>
+		<div>
+			<span class="content_body title_body">景點地址:</span>
+			<br>
+			<span class="content_body" id="address"></span>
+		</div>
+		<br>
+		<div>
+			<span class="content_body title_body">交通方式:</span>
+			<br>
+			<span class="content_body" id="transport"></span>
+		</div>
+	</div>
+	<div class="bottommsg">
+		<span class="bottommsg2">COPYRIGHT © 2021 台北一日遊</span>
+	</div>
+	</body>
+</html>
