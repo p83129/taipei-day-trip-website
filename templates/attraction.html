@@ -141,37 +141,37 @@
 			font-weight: bold;
 		}
 		.imgdiv{			
-			width: 400px;
+			width: 550px;
 			height: 320px;
 			float:left;
 			position:relative;
 			margin-top:20px;
-			left:130px;
+			left:55px;
 			overflow: hidden;
 		}
 		.list{
 			position: absolute;
             z-index: 1;
-            width: 4200px;
+            width: 10000px;
             height: 320px;
 		}
 		.imgsize{
 			float: left;
 
 
-			width: 400px;
+			width: 550px;
 			height: 320px;
 			border-radius: 5px;
 		}
 		.Itemdiv{
-			width: 600px;
+			width: 500px;
 			height: 320px;
 			font-size: 16px;
 			line-height: 13px;
 			position: relative;
 			float: left;
 			margin-top: 20px;
-			margin-left: 110px;
+			margin-left: 35px;
 			left:70px;
 		}
 		.text1{
@@ -298,7 +298,7 @@
             width: 40px;
             height: 40px;
 			top:50%;
-			margin-left: 340px;
+			margin-left: 480px;
             background: url(/btn_rightArrow.png) no-repeat;
             cursor: pointer;
             display: block;
@@ -320,8 +320,8 @@
 			.head{
 				font-size:40px;
 				width:90%;
-				height:755px;
-				margin-top: 0px;
+				height:755px;				
+				margin: 0px;
 			}
 			.content{
 				width:90%;
@@ -415,7 +415,7 @@
 			}
 			.Itemdiv{
 				margin-top:20px;
-				margin-left:0px;
+				margin-left:10px;
 				position:initial;
 				width:100%;
 				
@@ -432,10 +432,11 @@
         	}
 
 		}
-		@media screen and (min-width:601px) and (max-width:1200px){
+		@media screen and (min-width:601px) and (max-width:1000px){
 			.head{
 				font-size:40px;
 				width: 90%;
+				height: 700px;
 			}
 			.content{
 				width:90%;
@@ -451,15 +452,53 @@
 				line-height: 30px;
 			}
 			.Itemdiv{
-				width: 45%;
-				margin-left: 1%;
+				width: 500px;
+				margin-left: 15%;
 			}
 			.list{
 				left: 0px;
 			}
 			.imgdiv{
 				left: 5%;
+				margin-left: 15%;
 			}
+		}
+		@media screen and (min-width:1001px) and (max-width:1200px){
+			.head{
+				font-size:40px;
+				width: 90%;
+				height: 320px;
+			}
+			.content{
+				width:90%;
+				/*text-align:center;*/
+			}
+			.box{
+				width:35%;
+			}
+			.hr{			
+				width:90%;;
+			}
+			.Item-content{
+				line-height: 30px;
+			}
+			.Itemdiv{
+				width: 50%;
+				margin-left: 15px;
+			}
+			.list{
+				left: 0px;
+			}
+			.imgdiv{
+				width: 400px;
+			}
+			.Item{
+				width: 90%;
+			}
+			.btn_right{
+				margin-left: 340px;
+			}
+			
 		}
 		
 		
@@ -504,7 +543,7 @@
 				pic_count=pic.length;				
 					
 				document.getElementById('titalname').innerHTML = stitle;
-				document.getElementById('category').innerHTML = cat2;
+				document.getElementById('category').innerHTML = cat2 + " at " + mrt;
 				document.getElementById('description').innerHTML = xbody;
 				document.getElementById('address').innerHTML = Address;
 				document.getElementById('transport').innerHTML = info;
