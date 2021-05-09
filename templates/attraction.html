@@ -152,14 +152,15 @@
 		.list{
 			position: absolute;
             z-index: 1;
-            width: 4200px;
+            width: 10000px;
             height: 320px;
 		}
 		.imgsize{
 			float: left;
 
 
-			width: 550px;
+			/*width: 550px;*/
+			width: 600px;
 			height: 320px;
 			border-radius: 5px;
 		}
@@ -370,7 +371,7 @@
 				width:200px;
 			}
 			.mintitle1{
-				left:10%;
+				left:5%;
 				white-space:nowrap;
 			}
 			.titleall{
@@ -408,9 +409,10 @@
 				width: 100%;
 				height: 350px;
 				left:0%;
+				
 			}
 			.imgsize{
-				width: 380px;
+				width: 600px;
 				height: 350px;
 			}
 			.Itemdiv{
@@ -468,13 +470,14 @@
 				left:50%;
 			}
 			.imgsize{
-				width: 500px;
+				/*width: 756px;*/
+				width: 600px;
 			}
 			.Item{
 				width: 90%;
 			}
 			.btn_right{
-				margin-left: 500px;
+				margin-left: 90%;
 			}
 		}
 		@media screen and (min-width:801px) and (max-width:1000px){
@@ -512,7 +515,8 @@
 				left:60%;
 			}
 			.imgsize{
-				width: 330px;
+				/*width: 330px;*/
+				width: 600px;
 			}
 			.Item{
 				width: 90%;
@@ -639,19 +643,19 @@
 				list.style.left = newLeft + 'px';
 				//滾動判斷
 				
-				if (newLeft > -imgdiv) {
-					list.style.left = -imgdiv * (pic_count) + 'px';
+				if (newLeft > -600) {
+					list.style.left = -600 * (pic_count) + 'px';
 				}
-				if (newLeft < -imgdiv * (pic_count)) {
-					list.style.left = -imgdiv + 'px';
+				if (newLeft < -600 * (pic_count)) {
+					list.style.left = -600 + 'px';
 				}				
 			}	
 			
 			next.onclick = function(){
-				animate(imgdiv);
+				animate(600);
 			}
 			prev.onclick = function(){
-				animate(-imgdiv);
+				animate(-600);
 			}
 		}
 
