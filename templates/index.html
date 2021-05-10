@@ -50,8 +50,8 @@
 		}
 		.img{
 			display: block;
-			weight:100%;
-			height:75%;
+			width:100%;
+			height:180px;
 			
 			border-top-left-radius:5px;
 			border-top-right-radius:5px;
@@ -296,6 +296,7 @@
 			.outside{
 				margin-left: 20px;
 			}
+			
 						
 		}
 		@media screen and (min-width:601px) and (max-width:1200px){
@@ -348,7 +349,15 @@
 					var image=document.createElement("img");
 					image.className="img";
 					image.setAttribute("src", pic_new);
-					boxdiv.appendChild(image);
+
+					//圖片超連結
+					var a = document.createElement("a");
+					a.href="/attraction/" + value[i]["id"];
+					//alert(a.href);
+					a.appendChild(image);
+					boxdiv.appendChild(a);
+
+					
 					
 					var adddiv2=document.createElement("div");
 					adddiv2.className= "text";
@@ -412,7 +421,14 @@
 						var image=document.createElement("img");
 						image.className="img";
 						image.setAttribute("src", pic_new);
-						boxdiv.appendChild(image);
+
+						//圖片超連結
+						var a = document.createElement("a");
+						a.href="/attraction/" + value[i]["id"];
+						//alert(a.href);
+						a.appendChild(image);
+						boxdiv.appendChild(a);
+
 						
 						var adddiv2=document.createElement("div");
 						adddiv2.className= "text";
@@ -484,7 +500,13 @@
 						var image=document.createElement("img");
 						image.className="img";
 						image.setAttribute("src", pic_new);
-						boxdiv.appendChild(image);
+
+						//圖片超連結
+						var a = document.createElement("a");
+						a.href="/attraction/" + value[i]["id"];
+						//alert(a.href);
+						a.appendChild(image);
+						boxdiv.appendChild(a);
 						
 						var adddiv2=document.createElement("div");
 						adddiv2.className= "text";
