@@ -906,6 +906,7 @@
 			var Email = document.getElementById("txtEmail_new");
 			var Password = document.getElementById("txtPassword_new");
 			if(Name.value == ""|| Email.value == "" || Password.value == ""){
+				document.getElementById('callrmsg').style.color="red";
 				document.getElementById('callrmsg').innerHTML = "欄位不可為空";
 				document.getElementById('callrmsg').style.display = "block";
 				return
@@ -932,6 +933,7 @@
 					document.getElementById("txtEmail_new").value="";
 					document.getElementById("txtPassword_new").value="";					
 					document.getElementById('callrmsg').innerHTML = jsonObj["message"];
+					document.getElementById('callrmsg').style.color="red";
 					document.getElementById('callrmsg').style.display = "block";					
 				}
 				//清空email,passwoed
@@ -1008,7 +1010,7 @@
 					
 					<!-- 顯示錯誤訊息 -->
 					<div style= "line-height: 70px;">
-						<p class="callrmsg" id="callrmsg" style="color: red;"></p>
+						<p class="callrmsg" id="callrmsg"></p>
 						<span><a href="#" class="login_txt" id="loginup_txt">已經有帳戶了?點此登入</a></span>
 					</div>
 				</form>

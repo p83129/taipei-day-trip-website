@@ -427,8 +427,7 @@
 
 		var nextpage;		
 		var getdata = false;
-		window.onload =function() {
-		
+		window.onload =function() {		
 
 			//呼叫後端api，確認登入狀態
 			Loginstatus();	
@@ -499,6 +498,7 @@
 				}				
 			};
 			req2.send();//送出連線
+		
 
 			// 登入
 			Login();
@@ -543,7 +543,7 @@
 			req1.open("GET", "/api/user");
 			req1.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);
-				alert(this.responseText);
+				//alert(this.responseText);
 				var value = jsonObj["data"];											
 				if(value != null){
 					document.getElementById('login').innerHTML = "登出系統"					
@@ -637,6 +637,7 @@
 			var Email = document.getElementById("txtEmail_new");
 			var Password = document.getElementById("txtPassword_new");
 			if(Name.value == ""|| Email.value == "" || Password.value == ""){
+				document.getElementById('callrmsg').style.color="red";
 				document.getElementById('callrmsg').innerHTML = "欄位不可為空";
 				document.getElementById('callrmsg').style.display = "block";
 				return
