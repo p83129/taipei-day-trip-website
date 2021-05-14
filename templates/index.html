@@ -430,22 +430,10 @@
 		window.onload =function() {
 		
 
-			// //呼叫後端api，確認登入狀態
-			let req1=new XMLHttpRequest();
-			req1.open("get", "/api/user");
-			req1.onload=function(){
-				var jsonObj = JSON.parse(this.responseText);
-				var value = jsonObj["data"];											
-				if(value != null){
-					document.getElementById('login').innerHTML = "登出系統"					
-				}
-				else{
-					document.getElementById('login').innerHTML = "登入/註冊"
-				}						
-			}
-			req1.send();//送出連線
+			//呼叫後端api，確認登入狀態
+			Loginstatus();	
 
-
+			//載入圖片
 			let req2=new XMLHttpRequest();
 			req2.open("get", "/api/attractions");
 			req2.onload=function(){
@@ -512,40 +500,9 @@
 			};
 			req2.send();//送出連線
 
-
 			// 登入
-			var login = document.getElementById('login');
-			login.onclick = function(){	
-				//清空輸入框
-				document.getElementById("txtEmail").value="";
-				document.getElementById("txtPassword").value="";
-				document.getElementById("errormsg").style.display="none";
-				//alert(login.innerHTML);
-				if(login.innerHTML=="登出系統")	{
-					let req3=new XMLHttpRequest();
-					req3.open("DELETE", "/api/user");
-					req3.onload=function(){		
-						var jsonObj = JSON.parse(this.responseText);						
-						//alert(this.responseText);						
-						if(Object.keys(jsonObj)[0] == "ok"){
-							document.getElementById('login').innerHTML = "登入/註冊"
-							alert("登出成功");
-							location.reload();//重新整理
-						}
-						else{
-							alert("登出失敗");
-						}						
-					}
-					req3.send();//送出連線
-				}
-				else{
-					var hidebg = document.getElementById("hidebg");
-					hidebg.style.display="block";  //顯示隱藏層
-					hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
-					document.getElementById("Sign_in").style.display="block";  //顯示彈出層
-				}		
-				
-			}
+			Login();
+			
 			var login_img = document.getElementById('login_img');
 			login_img.onclick = function(){	
 				document.getElementById("hidebg").style.display="none";
@@ -580,6 +537,59 @@
    				document.getElementById("Sign_in").style.display="none";				
 			}
 		}
+		//確認登入狀態
+		function Loginstatus(){
+			let req1=new XMLHttpRequest();
+			req1.open("get", "/api/user");
+			req1.onload=function(){
+				var jsonObj = JSON.parse(this.responseText);
+				var value = jsonObj["data"];											
+				if(value != null){
+					document.getElementById('login').innerHTML = "登出系統"					
+				}
+				else{
+					document.getElementById('login').innerHTML = "登入/註冊"
+				}						
+			}
+			req1.send();//送出連線
+		}
+
+		//登入
+		function Login(){
+			var login = document.getElementById('login');
+			login.onclick = function(){	
+				//清空輸入框
+				document.getElementById("txtEmail").value="";
+				document.getElementById("txtPassword").value="";
+				document.getElementById("errormsg").style.display="none";
+				//alert(login.innerHTML);
+				if(login.innerHTML=="登出系統")	{
+					let req3=new XMLHttpRequest();
+					req3.open("DELETE", "/api/user");
+					req3.onload=function(){		
+						var jsonObj = JSON.parse(this.responseText);						
+						//alert(this.responseText);						
+						if(Object.keys(jsonObj)[0] == "ok"){
+							document.getElementById('login').innerHTML = "登入/註冊"
+							alert("登出成功");
+							location.reload();//重新整理
+						}
+						else{
+							alert("登出失敗");
+						}						
+					}
+					req3.send();//送出連線
+				}
+				else{
+					var hidebg = document.getElementById("hidebg");
+					hidebg.style.display="block";  //顯示隱藏層
+					hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
+					document.getElementById("Sign_in").style.display="block";  //顯示彈出層
+				}		
+				
+			}
+		}
+
 		function Sign_in(txtEmail, txtPassword){
 			//alert("123123132132131");
 
