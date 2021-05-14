@@ -692,7 +692,7 @@
 			
 			// //呼叫後端api，確認登入狀態
 			let req=new XMLHttpRequest();
-			req.open("get", "/api/user");
+			req.open("GET", "/api/user");
 			req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];											
@@ -707,7 +707,7 @@
 
 			
 			let req1=new XMLHttpRequest();
-			req1.open("get", "/api/attraction/" + id);
+			req1.open("GET", "/api/attraction/" + id);
 			req1.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
