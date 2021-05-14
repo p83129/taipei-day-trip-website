@@ -543,6 +543,7 @@
 			req1.open("get", "/api/user");
 			req1.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);
+				alert(this.responseText);
 				var value = jsonObj["data"];											
 				if(value != null){
 					document.getElementById('login').innerHTML = "登出系統"					
