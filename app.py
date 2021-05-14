@@ -1,11 +1,19 @@
 from flask import *
 import mysql.connector
 
+from flask import request
+from flask import render_template
+from flask import url_for
+from flask import redirect
+
+
 app=Flask(__name__, static_url_path="/", static_folder="image")
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 
 app.config['JSON_SORT_KEYS'] = False
+
+app.secret_key = b'p83129'
 
 # Pages
 @app.route("/")
@@ -211,6 +219,119 @@ def api_attractions_id(attractionId):
 		jsObj = jsonify(Error_info)				
 		
 		return jsObj
+
+
+
+@app.route("/api/user",methods=["GET"])
+def api_user_get():
+	id = session['id']
+	name = session['name']
+	email = session['email']
+
+	if name !="" and email !="" and id !="":
+		data_info = {'data':{
+								'id':id,
+								'name':name,
+								'email':email
+							}
+					}							
+		jsObj = jsonify(data_info)				
+		return jsObj
+	else:
+		data_info = {'data':None}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+
+
+@app.route("/api/user",methods=["POST"])
+def api_user_post():
+	#print("4564567845121456123")
+	Name = request.args.get("txtName_new")
+	Email = request.args.get("txtEmail_new")
+	Password = request.args.get("txtPassword_new")
+	
+	try:
+		with mydb.cursor() as cursor:
+			sql = "Select name From user Where email = '"  + Email + "'"
+			print(sql)
+			cursor.execute(sql)
+			result = cursor.fetchall()
+			mydb.close #關資料庫
+			#print("123132132131132123132")
+			if len(result)==0:					
+				sql = "Insert Into user (name, email, password) Values(%s, %s, %s)" 
+				val = (Name, Email, Password)   
+				cursor.execute(sql, val)
+				mydb.commit()
+				mydb.close #關資料庫
+				#print("新增")
+				data_info = {'ok':True}
+				jsObj = jsonify(data_info) 					
+				return jsObj
+
+			else:
+				data_info = {'error':True, 'message':"此電子信箱已註冊過"}
+				jsObj = jsonify(data_info) 					
+				return jsObj
+
+	except:
+		data_info = {'error':'true',
+					'message':'伺服器內部錯誤'}
+		jsObj = jsonify(data_info) 		
+		return jsObj
+
+@app.route("/api/user",methods=["PATCH"])
+def api_user_patch():	
+	#Email=request.form["txtEmail"]
+	#Password=request.form["txtPassword"]
+	Email = request.args.get("txtEmail")
+	Password = request.args.get("txtPassword")
+	#print("!!!!!!!!!!!!!!!!!!!!!!!", Email)
+	try:
+		with mydb.cursor() as cursor:
+			sql = "Select id, name From user Where email = '"  + Email + "' And password = '" + Password + "'"		
+			cursor.execute(sql)
+			result = cursor.fetchall()
+			mydb.close #關資料庫
+			
+			if len(result)>0:
+				for row in result:							
+					#print("~~~~~~~~~~")
+					session['status'] = '已登入' 
+					session['id'] = str(row[0])
+					session['name'] = str(row[1])
+					session['email'] = Email
+					session['password'] = Password
+					#print("session", session['name'])					
+					data_info = {'ok':True}
+					jsObj = jsonify(data_info) 					
+					return jsObj
+					
+			else:
+				#print("elseelseelseleselselslelsel")
+				data_info = {'error':True,
+							'message':"沒有此會員"}
+				jsObj = jsonify(data_info)				
+				return jsObj
+					
+	except:
+		data_info = {'error':'true',
+					'message':'伺服器內部錯誤'}
+		jsObj = jsonify(data_info) 		
+		return jsObj
+
+@app.route("/api/user",methods=["DELETE"])
+def api_user_delete():
+	session['status'] = "已登出" 
+	session['email'] = ""
+	session['password'] = ""
+
+	data_info = {'ok':True}
+	jsObj = jsonify(data_info) 		
+	return jsObj
+
+
 
 
 app.run(host="0.0.0.0", port=3000)
