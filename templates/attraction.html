@@ -3,7 +3,7 @@
     <head>
 		<meta charset="utf-8" /></meta>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=1.0" />
-		<title> HomeWork1</title>
+		<title>台北一日遊</title>
 		<style type="text/css">
 		.head{			
 			color:black;
@@ -151,7 +151,7 @@
 		}
 		.list{
 			position: absolute;
-            z-index: 1;
+            
             width: 10000px;
             height: 320px;
 		}
@@ -294,7 +294,7 @@
 		.btn_right {
             position: absolute;
             top: 180px;
-            z-index: 1;
+           
             display: none;
             width: 40px;
             height: 40px;
@@ -307,7 +307,7 @@
 		.btn_left {
 			position: absolute;
             top: 180px;
-            z-index: 1;
+            
             display: none;
             width: 40px;
             height: 40px;
@@ -316,6 +316,114 @@
             background: url(/btn_leftArrow.png) no-repeat;
             cursor: pointer;
             display: block;
+		}
+		.login_position{
+			width: 300px;
+			height: 0px;
+			margin: auto;
+		}
+		.login{
+			width: 300px;
+			height: 285px;
+			background: #FFFFFF;
+			box-shadow: 0px 4px 60px #AAAAAA;
+			border-radius: 6px;
+			margin:auto;
+			position: relative;
+			z-index: 1;
+			top: 45px;
+		}
+		.login_modal{
+			width: 300px;			
+			
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.login_bgcolor{
+			width: 300px;
+			height: 10px;
+			background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+		}
+		.from{
+			height: 100%;
+			text-align: center;
+			font-family: Noto Sans TC;
+			font-style: normal;
+			color: #666666;
+			line-height: 50px;
+			
+		}
+		#h2{
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: bold;
+			font-size: 24px;
+			color: #666666;
+			margin: 10px 0px;
+		}
+		.login_input{
+			width: 260px;			
+			padding: 10px;
+			background: #FFFFFF;
+			border: 1px solid #CCCCCC;
+			box-sizing: border-box;
+			border-radius: 5px;
+		}
+		.login_btn{
+			width: 260px;			
+			padding: 10px;
+			background: #448899;			
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 19px;
+			line-height: 16px;			
+			color: #FFFFFF;
+			border-radius: 5px;
+			border: 1px solid #448899;
+		}
+		.login_txt{
+			font-family: Noto Sans TC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 16px;
+			line-height: 13px;
+			color: #666666;
+		}
+		#hidebg{
+			position:absolute;
+			left:0px;
+			top:0px;
+			background-color:#000;
+			width:100%;  /*寬度100%，這樣才能使隱藏背景層覆蓋元頁面*/
+			filter:alpha(opacity=60);  /*透明度為60%*/
+			opacity:0.6;  /*非IE瀏覽器下設置透明度為60%*/
+			display:none;
+			z-Index:1;
+		}
+		#loginup_img{
+			position: relative;
+			bottom: 60px;
+			left: 120px;
+			cursor:pointer;
+		}
+		#login_img{			
+			position: relative;
+			bottom: 60px;
+			left: 120px;
+			cursor:pointer;			
+		}
+		#errormsg{
+			display: none;
+			margin-bottom: -20px;
+			margin-top: -26px;
+			color: red;
+		}
+		#callrmsg{
+			display: none;
+			margin-top: -15px;
+			margin-bottom: -45px;
 		}
 		@media screen and (max-width:600px){
 			.head{
@@ -581,9 +689,14 @@
 			//alert('location.pathname: '+location.pathname);
 			var id = location.pathname.substr(12);
 			//alert(id);
-			let req=new XMLHttpRequest();
-			req.open("get", "/api/attraction/" + id);
-			req.onload=function(){
+			
+			//呼叫後端api，確認登入狀態
+			Loginstatus();	
+
+			//載入圖片
+			let req1=new XMLHttpRequest();
+			req1.open("GET", "/api/attraction/" + id);
+			req1.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];
@@ -628,7 +741,7 @@
 				divlist.appendChild(img);					
 					
 			};
-			req.send();//送出連線
+			req1.send();//送出連線
 
 			//var allBoxs = ulimg.children;
 			var list = document.getElementById('list');
@@ -657,13 +770,186 @@
 			prev.onclick = function(){
 				animate(-600);
 			}
+
+			// 登入
+			Login();
+			
+			var login_img = document.getElementById('login_img');
+			login_img.onclick = function(){	
+				document.getElementById("hidebg").style.display="none";
+   				document.getElementById("Sign_in").style.display="none";				
+			}
+
+			// 註冊
+			var login_txt = document.getElementById('login_txt');
+			login_txt.onclick = function(){
+				document.getElementById("callrmsg").style.display="none";				
+				document.getElementById("Sign_in").style.display="none";
+				document.getElementById("Sign_up").style.display="block"; 
+			}
+
+			var loginup_img = document.getElementById('loginup_img');
+			loginup_img.onclick = function(){				
+				document.getElementById("hidebg").style.display="none";
+   				document.getElementById("Sign_up").style.display="none";				
+			}
+
+			// 再回登入視窗
+			var loginup_txt = document.getElementById('loginup_txt');
+			loginup_txt.onclick = function(){	
+				document.getElementById("errormsg").style.display="none";			
+				document.getElementById("Sign_up").style.display="none";
+				document.getElementById("Sign_in").style.display="block";
+			}
+
+			var login_img = document.getElementById('login_img');
+			login_img.onclick = function(){				
+				document.getElementById("hidebg").style.display="none";
+   				document.getElementById("Sign_in").style.display="none";				
+			}
 		}
+		//確認登入狀態
+		function Loginstatus(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/user");
+			req.onload=function(){
+				var jsonObj = JSON.parse(this.responseText);
+				var value = jsonObj["data"];											
+				if(value != null){
+					document.getElementById('login').innerHTML = "登出系統"					
+				}
+				else{
+					document.getElementById('login').innerHTML = "登入/註冊"
+				}						
+			}
+			req.send();//送出連線
+		}
+		//登入
+		function Login(){
+			var login = document.getElementById('login');
+			login.onclick = function(){	
+				//清空輸入框
+				document.getElementById("txtEmail").value="";
+				document.getElementById("txtPassword").value="";
+				document.getElementById("errormsg").style.display="none";
+				//alert(login.innerHTML);
+				if(login.innerHTML=="登出系統")	{
+					let req2=new XMLHttpRequest();
+					req2.open("DELETE", "/api/user");
+					req2.onload=function(){		
+						var jsonObj = JSON.parse(this.responseText);						
+						//alert(this.responseText);						
+						if(Object.keys(jsonObj)[0] == "ok"){
+							document.getElementById('login').innerHTML = "登入/註冊"
+							alert("登出成功");
+							location.reload();//重新整理
+						}
+						else{
+							alert("登出失敗");
+						}						
+					}
+					req2.send();//送出連線
+				}
+				else{
+					var hidebg = document.getElementById("hidebg");
+					hidebg.style.display="block";  //顯示隱藏層
+					hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
+					document.getElementById("Sign_in").style.display="block";  //顯示彈出層
+				}		
+				
+			}
+		}
+
+		function Sign_in(txtEmail, txtPassword){
+			//alert("123123132132131");
+
+			//欄位不可為空值判斷
+			var Email = document.getElementById("txtEmail");
+			var Password = document.getElementById("txtPassword");
+			if(Email.value == "" || Password.value == ""){
+				document.getElementById('errormsg').innerHTML = "欄位不可為空";
+				document.getElementById('errormsg').style.display = "block";
+				return
+			}	
+
+			let req3=new XMLHttpRequest();
+			req3.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+			req3.onload=function(){				
+				var jsonObj = JSON.parse(this.responseText);				
+				var value = jsonObj["data"];
+				//console.log(value);
+				//alert(this.responseText);				
+				//alert(Object.keys(jsonObj)[0]);
+				if(Object.keys(jsonObj)[0] != "error"){	
+					document.getElementById("Sign_in").style.display="none";
+					document.getElementById("hidebg").style.display="none";				
+					document.getElementById('login').innerHTML = "登出系統";
+				}
+				else{
+					//出錯誤訊息
+					document.getElementById("txtEmail").value="";
+					document.getElementById("txtPassword").value="";					
+					document.getElementById('errormsg').innerHTML = jsonObj["message"];
+					document.getElementById('errormsg').style.display = "block";
+					
+				}
+				//清空email,passwoed				
+			};
+			req3.send();
+
+		}
+		function Sign_out(txtName_new, txtEmail_new, txtPassword_new){
+			//alert(txtName_new);	
+			
+			//欄位不可為空值判斷
+			var Name = document.getElementById("txtName_new");
+			var Email = document.getElementById("txtEmail_new");
+			var Password = document.getElementById("txtPassword_new");
+			if(Name.value == ""|| Email.value == "" || Password.value == ""){
+				document.getElementById('callrmsg').style.color="red";
+				document.getElementById('callrmsg').innerHTML = "欄位不可為空";
+				document.getElementById('callrmsg').style.display = "block";
+				return
+			}
+			
+			let req4=new XMLHttpRequest();
+			req4.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+			req4.onload=function(){
+				var jsonObj = JSON.parse(this.responseText);				
+				var value = jsonObj["data"];
+				// console.log(value);
+				// alert(this.responseText);				
+				//alert(Object.keys(jsonObj)[0]);
+				if(Object.keys(jsonObj)[0] != "error"){		
+					document.getElementById("txtName_new").value="";
+					document.getElementById("txtEmail_new").value="";
+					document.getElementById("txtPassword_new").value="";
+					document.getElementById('callrmsg').style.color="green";			
+					document.getElementById('callrmsg').innerHTML = "註冊成功";					
+				}
+				else{
+					//出錯誤訊息
+					document.getElementById("txtName_new").value="";
+					document.getElementById("txtEmail_new").value="";
+					document.getElementById("txtPassword_new").value="";					
+					document.getElementById('callrmsg').innerHTML = jsonObj["message"];
+					document.getElementById('callrmsg').style.color="red";
+					document.getElementById('callrmsg').style.display = "block";					
+				}
+				//清空email,passwoed
+			};
+			req4.send();
+
+		}
+
+		
 
 		
 		
 		</script>
 	</head>
 	<body style="margin:0px;" >
+	<div id="hidebg"></div>	
 	<div class="titleall">
 		<div class="title">
 			<span >台北一日遊</span>
@@ -671,11 +957,70 @@
 		<div class="mintitle1">
 			<span >預定行程</span>
 			&nbsp
-			<span>登入/註冊</span>
+			<span><a href="javascript:;" id="login" style="color:#666666; text-decoration: none;" >登入/註冊</a></span>
 		</div>		
 	</div>
+	<!-- 彈出小視窗 -->
+	<div class="login_position">
+		<div class="login" style="display: none;" id="Sign_in">
+			<div class="login_bgcolor"></div>
+			<div class="login_modal">
+				<form class="from">
+					<div style="height:45px;">
+						<p id="h2">登入會員帳號</p>				
+						<img class="login_img" src="/icon_close.png" id="login_img"></img>
+					</div>
+					<div>
+						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail">
+					</div>
+					<div>
+						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword">			
+					</div>
+					<div>
+						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)">登入帳戶</button>
+					</div>
+					<!-- 顯示錯誤訊息 -->
+					<div style="margin-top: 18px;">
+						<p class="errormsg" id="errormsg"></p>
+						<span><a href="#" class="login_txt" id="login_txt">還沒有帳戶?點此註冊</a></span>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="login" id="Sign_up" style="display: none; height: 330px;">
+			<div class="login_bgcolor"></div>
+			<div class="login_modal">
+				<form class="from">
+					<div style="height:45px;">
+						<p id="h2">註冊會員帳號</p>				
+						<img  class="loginup_img" src="/icon_close.png" id="loginup_img"></img>
+					</div>
+					<div>
+						<input type="text" class="login_input" placeholder="輸入姓名" id="txtName_new">
+					</div>
+					<div>
+						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail_new">
+					</div>
+					<div>
+						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
+					</div>
+					<div>
+						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)">註冊新帳戶</button>
+					</div>
+					
+					<!-- 顯示錯誤訊息 -->
+					<div style= "line-height: 70px;">
+						<p class="callrmsg" id="callrmsg"></p>
+						<span><a href="#" class="login_txt" id="loginup_txt">已經有帳戶了?點此登入</a></span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--  -->
 	<hr size="1" noshade color="#E8E8E8" ></hr>
 	<div class="head">
+
 		<div class="imgdiv" id="imgdiv">
 			<div id="list" style="left:-400px;" class="list"></div>
 			<a href="javascript:;" id="prev" class="btn_right" style="text-decoration:none;"></a>
@@ -737,5 +1082,7 @@
 	<div class="bottommsg">
 		<span class="bottommsg2">COPYRIGHT © 2021 台北一日遊</span>
 	</div>
+
+
 	</body>
 </html>
