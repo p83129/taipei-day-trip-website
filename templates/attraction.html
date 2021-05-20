@@ -687,6 +687,8 @@
 		
 		window.onload =function() {
 			//alert('location.pathname: '+location.pathname);
+
+			//抓取網址上的id
 			var id = location.pathname.substr(12);
 			//alert(id);
 			
@@ -694,9 +696,9 @@
 			Loginstatus();	
 
 			//載入圖片
-			let req1=new XMLHttpRequest();
-			req1.open("GET", "/api/attraction/" + id);
-			req1.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/attraction/" + id);
+			req.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];
@@ -741,7 +743,7 @@
 				divlist.appendChild(img);					
 					
 			};
-			req1.send();//送出連線
+			req.send();//送出連線
 
 			//var allBoxs = ulimg.children;
 			var list = document.getElementById('list');
@@ -771,8 +773,8 @@
 				animate(-600);
 			}
 
-			// 登入
-			Login();
+			//// 登入
+			//Login();
 			
 			var login_img = document.getElementById('login_img');
 			login_img.onclick = function(){	
@@ -827,41 +829,40 @@
 		//登入
 		function Login(){
 			var login = document.getElementById('login');
-			login.onclick = function(){	
-				//清空輸入框
-				document.getElementById("txtEmail").value="";
-				document.getElementById("txtPassword").value="";
-				document.getElementById("errormsg").style.display="none";
-				//alert(login.innerHTML);
-				if(login.innerHTML=="登出系統")	{
-					let req2=new XMLHttpRequest();
-					req2.open("DELETE", "/api/user");
-					req2.onload=function(){		
-						var jsonObj = JSON.parse(this.responseText);						
-						//alert(this.responseText);						
-						if(Object.keys(jsonObj)[0] == "ok"){
-							document.getElementById('login').innerHTML = "登入/註冊"
-							alert("登出成功");
-							location.reload();//重新整理
-						}
-						else{
-							alert("登出失敗");
-						}						
+			////////login.onclick = function(){	
+			//清空輸入框
+			document.getElementById("txtEmail").value="";
+			document.getElementById("txtPassword").value="";
+			document.getElementById("errormsg").style.display="none";
+			//alert(login.innerHTML);
+			if(login.innerHTML=="登出系統")	{
+				let req=new XMLHttpRequest();
+				req.open("DELETE", "/api/user");
+				req.onload=function(){		
+					var jsonObj = JSON.parse(this.responseText);						
+					//alert(this.responseText);						
+					if(Object.keys(jsonObj)[0] == "ok"){
+						document.getElementById('login').innerHTML = "登入/註冊"
+						alert("登出成功");
+						location.reload();//重新整理
 					}
-					req2.send();//送出連線
+					else{
+						alert("登出失敗");
+					}						
 				}
-				else{
-					var hidebg = document.getElementById("hidebg");
-					hidebg.style.display="block";  //顯示隱藏層
-					hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
-					document.getElementById("Sign_in").style.display="block";  //顯示彈出層
-				}		
-				
+				req.send();//送出連線
 			}
+			else{
+				var hidebg = document.getElementById("hidebg");
+				hidebg.style.display="block";  //顯示隱藏層
+				hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
+				document.getElementById("Sign_in").style.display="block";  //顯示彈出層
+			}		
+				
+			///////}
 		}
-
-		function Sign_in(txtEmail, txtPassword){
-			//alert("123123132132131");
+		//登入
+		function Sign_in(txtEmail, txtPassword){		
 
 			//欄位不可為空值判斷
 			var Email = document.getElementById("txtEmail");
@@ -869,12 +870,12 @@
 			if(Email.value == "" || Password.value == ""){
 				document.getElementById('errormsg').innerHTML = "欄位不可為空";
 				document.getElementById('errormsg').style.display = "block";
-				return
+				
 			}	
-
-			let req3=new XMLHttpRequest();
-			req3.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
-			req3.onload=function(){				
+			else{
+				let req=new XMLHttpRequest();
+				req.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+				req.onload=function(){				
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
 				//console.log(value);
@@ -884,6 +885,7 @@
 					document.getElementById("Sign_in").style.display="none";
 					document.getElementById("hidebg").style.display="none";				
 					document.getElementById('login').innerHTML = "登出系統";
+					location.reload();//重新整理
 				}
 				else{
 					//出錯誤訊息
@@ -895,7 +897,10 @@
 				}
 				//清空email,passwoed				
 			};
-			req3.send();
+			req.send();
+			}
+
+			
 
 		}
 		function Sign_out(txtName_new, txtEmail_new, txtPassword_new){
@@ -909,12 +914,12 @@
 				document.getElementById('callrmsg').style.color="red";
 				document.getElementById('callrmsg').innerHTML = "欄位不可為空";
 				document.getElementById('callrmsg').style.display = "block";
-				return
+				
 			}
-			
-			let req4=new XMLHttpRequest();
-			req4.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
-			req4.onload=function(){
+			else{
+				let req=new XMLHttpRequest();
+				req.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+				req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
 				// console.log(value);
@@ -938,26 +943,90 @@
 				}
 				//清空email,passwoed
 			};
-			req4.send();
-
+			req.send();
+			}
 		}
 
-		
+		//開始預訂行程
+		function Booking(){			
+			var id = location.pathname.substr(12);//抓取網址上的id
+			var txtdate = document.getElementById('txtdate').value;					
+			var txtam = document.getElementById('txtam');
+			//var txtpm = document.getElementById('txtpm');
+			//alert("AM" + txtam.checked);
+			//alert("PM" + txtpm.checked);			
+			var txtmoney = "";
+			var txttime = "";
+			if(txtdate != ""){
+				if(txtam.checked == true){
+				txttime = "morning";
+				txtmoney = "2000";
+				}
+				else{				
+					txttime = "afternoon";
+					txtmoney = "2500";
+				}
 
-		
-		
+				let req=new XMLHttpRequest();
+				req.open("POST", "/api/booking?id=" + id + "&txtdate=" + txtdate + "&txttime=" + txttime + "&txtmoney=" + txtmoney);
+				req.onload=function(){
+					var jsonObj = JSON.parse(this.responseText);	
+					if(jsonObj["ok"] == true){
+						self.location = "/booking";
+					}		
+					else if(jsonObj["message"] == "請勿重複預定行程"){
+						alert("請勿重複預定行程");
+					}
+					else{//未登入
+						alert("請先登入會員");
+						Login();
+					}
+				}
+				req.send();
+
+			}
+			else{
+				alert("日期欄位不可為空");				
+			}			
+		}
+
+		//預定行程
+		function Order(){	
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/booking");
+			req.onload=function(){
+				var jsonObj = JSON.parse(this.responseText);	
+				if(jsonObj["error"] == true){
+					//未登入
+					alert("請先登入會員");
+					Login();
+				}		
+				else{
+					self.location = "/booking";
+				}
+				
+			}
+			req.send();		
+				
+		}
+
+		//回首頁
+		function index(){
+        	self.location="/";
+    	}
+
 		</script>
 	</head>
 	<body style="margin:0px;" >
 	<div id="hidebg"></div>	
 	<div class="titleall">
 		<div class="title">
-			<span >台北一日遊</span>
+			<span onclick="index()">台北一日遊</span>
 		</div>
 		<div class="mintitle1">
-			<span >預定行程</span>
+			<span onclick="Order()">預定行程</span>
 			&nbsp
-			<span><a href="javascript:;" id="login" style="color:#666666; text-decoration: none;" >登入/註冊</a></span>
+			<span><a href="#" id="login" style="color:#666666; text-decoration: none;" onclick="Login()">登入/註冊</a></span>
 		</div>		
 	</div>
 	<!-- 彈出小視窗 -->
@@ -974,7 +1043,7 @@
 						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail">
 					</div>
 					<div>
-						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword">			
+						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword">			
 					</div>
 					<div>
 						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)">登入帳戶</button>
@@ -1002,7 +1071,7 @@
 						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail_new">
 					</div>
 					<div>
-						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
+						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
 					</div>
 					<div>
 						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)">註冊新帳戶</button>
@@ -1040,22 +1109,22 @@
 					<span style="font-weight: normal;">以此景點為中心的一日行程，帶你探索城市角落故事</span>
 					<br>
 					<span>選擇日期:</span>
-						<input type="date" placeholder="YYYY-MM-DD"></input>
+						<input type="date" placeholder="YYYY-MM-DD" id="txtdate"></input>
 					<br>
 					<span>選擇時間:</span>
 						<label>
-							<input type="radio" checked name="daytime" class="demoHidden" onclick="Money('AM')">
-								<span class="radioInput"></span>上半天 
+							<input type="radio" id="txtam" checked name="daytime" class="demoHidden" onclick="Money('AM')">
+								<span class="radioInput" ></span>上半天 
 						</label>
 						<label>
-							<input type="radio" name="daytime" class="demoHidden" onclick="Money('PM')">
-							  <span class="radioInput"></span>下半天 
+							<input type="radio" id="txtpm" name="daytime" class="demoHidden" onclick="Money('PM')">
+							  <span class="radioInput" ></span>下半天 
 						</label>
 					<br>
 					<span>導覽費用:</span>
 						<span id="money1" style="font-weight:normal;">新台幣2000元</span>
 					<br>
-					<button class="btn">開始預訂行程</button>
+					<button class="btn" onclick="Booking()">開始預訂行程</button>
 				</div>
 			</div>
 		</div>
