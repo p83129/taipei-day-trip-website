@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=1.0" />
+<title>台北一日遊</title>
+<style type="text/css">    
+    .titleall{
+        display: flex;
+        /* margin-left: 18%;
+        margin-right: 15%; */
+        width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .title{
+        margin:10px 0px;
+        color:#448899;
+        font-size:30px;
+        font-weight:bold;
+        line-height:34px;
+    }
+    .mintitle1{
+        margin-top: 20px;
+        color:#666666;
+        font-size:16px;			
+        line-height:13px;
+        position:relative;
+        left:75%;
+    }
+    .booking_model{         
+        width: 1000px;        
+        margin: 40px auto;        
+        
+    }
+    .model1{
+        margin: 40px 0px;
+        width: 100%;
+        float: left;
+    }    
+    .model2{
+        float: left;
+    }  
+    .model3{
+        margin-left: 30px;
+        width: 70%;
+    } 
+    .bottommsg{
+        background: #757575;
+        /* height:104px; */
+        color:#FFFFFF;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 13px;
+        text-align:center;
+        margin-top: 30px;
+        padding: 50px;
+    }	    
+    .text_hello{
+        font-family: Noto Sans TC;
+        font-style: normal;  
+        font-weight: normal;      
+        font-size: 19px;
+        line-height: 16px;       
+        /* display: flex; */
+        align-items: center;
+        color: #666666;
+    }
+    .text_bold{
+        font-weight: bold;
+    }
+    .img_size{
+        width: 266px;
+        height: 200px;
+    }
+    .text_content{
+        font-family: Noto Sans TC;
+        font-style: normal;  
+        /* font-weight: normal; */
+        font-size: 16px;
+        line-height: 30px;      
+        /* display: flex; */
+        align-items: center;
+        color: #666666;
+    }
+    .text_taipei{       
+        color: #448899;
+    }
+    .icon_delete{
+        float: right;
+    }
+    .line_height{
+        line-height: 50px;
+    }
+    .text_align{
+        text-align: right;
+    }
+    .button{
+        width: 175px;
+        height: 40px;
+        background: #448899;
+        border-radius: 5px;
+        color: #FFFFFF;
+        border: none;
+    }
+    .input_text{        
+        background: #FFFFFF;
+        border: 1px solid #E8E8E8;
+        box-sizing: border-box;
+        border-radius: 5px;
+        width: 200px;
+        height: 35px;
+        padding: 10px;
+    }
+    .hr{
+        width: 1200px;
+    }
+
+    /* 調整RWD */
+    @media screen and (min-width:1001px) and (max-width:1200px){
+        .titleall{
+            margin-left: 13%;
+            width: 80%;
+        }
+        .mintitle1{
+            left: 60%;
+        }
+        .booking_model{         
+            width: 70%;
+        }
+        .model3{
+            margin-left: 5%;
+            width: 57%;
+        } 
+        .hr{
+            width: 70%;
+        }
+        
+    }
+    @media screen and (min-width:601px) and (max-width:1000px){
+        .titleall{            
+            width: 70%;
+        }
+        .booking_model{         
+            width: 70%;
+        }
+        .hr{
+            width: 70%;
+        }
+        .mintitle1{
+            left: 55%;
+        }        
+        .model2{
+            width: 100%;
+        }  
+        .model3{
+            margin: 10px 0px 0px 0px;
+        }  
+        .img_size{
+            width: 100%;
+            height: 80%;
+        }
+        
+    }    
+    /* @media screen and (min-width:601px) and (max-width:700px){
+        
+        
+    } */
+    @media screen and (max-width:600px){
+        .titleall{            
+            width: 90%;
+        }
+        .mintitle1{
+            left: 10%;
+        }
+        .booking_model{         
+            width: 95%;
+        }
+        .model2{
+            width: 100%;
+        }  
+        .model3{
+            margin: 0px;
+        }  
+        .img_size{
+            width: 100%;
+            height: 60%;
+        }
+        .icon_delete{
+            position: relative;
+            top: 165px;
+        }
+        .hr{
+            width: 90%;
+        }
+        
+
+    }
+    
+    
+    
+</style>
+<script type="text/javascript">
+    window.onload = function() {
+        //判斷登入狀態
+        let req=new XMLHttpRequest();
+        req.open("GET", "/api/user");
+        req.onload=function(){
+            var jsonObj = JSON.parse(this.responseText);
+            var value = jsonObj["data"];											
+            if(value != null){
+                //已登入
+                document.getElementById('login').innerHTML = "登出系統"	
+                //登入名稱
+                var name = document.getElementById('name');
+                name.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
+                var name1 = document.getElementById('name1');
+                name1.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
+                //取得尚未確認下單的預定行程
+                GetBooking();
+
+            }
+            else{
+                //未登入
+                alert("請先登入會員");
+                index()
+            }						
+        }
+		req.send();//送出連線
+    }
+
+    //取得尚未確認下單的預定行程
+    function GetBooking(){
+        let req1=new XMLHttpRequest();
+        req1.open("GET", "/api/booking");
+        req1.onload=function(){
+            var jsonObj = JSON.parse(this.responseText);
+            console.log(jsonObj);
+            var value = jsonObj["data"];
+            
+            if(value != null){
+                //打開div
+                var Info = document.getElementById('Info');
+                Info.style.display = "block";
+                //圖片
+                var img = document.getElementById('img');
+                img.setAttribute("src", value["attraction"]["image"]);
+                //標題
+                var txtstitle = document.getElementById('txtstitle');
+                txtstitle.innerHTML = value["attraction"]["name"];
+                //日期
+                var txtdate = document.getElementById('txtdate');
+                txtdate.innerHTML = jsonObj["date"];
+                //時間
+                var txttime = document.getElementById('txttime');
+                if(jsonObj["time"] == "morning"){
+                    txttime.innerHTML = "早上9點到下午4點";
+                }
+                else{
+                    txttime.innerHTML = "下午2點到晚上9點";
+                }
+                
+                //費用
+                var txtprice = document.getElementById('txtprice');
+                txtprice.innerHTML = "新台幣" + jsonObj["price"] + "元";
+                //地點
+                var txtaddress = document.getElementById('txtaddress');
+                txtaddress.innerHTML = value["attraction"]["address"];
+                //總價
+                var txtmoney = document.getElementById('txtmoney');
+                txtmoney.innerHTML = "總價：新台幣" + jsonObj["price"] + "元";
+                
+            }
+            else{
+                var NoInfo = document.getElementById('NoInfo');
+                NoInfo.style.display = "block";
+
+                var bottommsg = document.getElementById('bottommsg');
+                bottommsg.style.padding = "5% 50px 60% 50px";            
+                
+
+            }
+            		
+        }
+		req1.send();//送出連線
+
+    }
+
+    //回首頁
+    function index(){
+        self.location="/";
+    }
+
+    //登出回首頁
+    function Logout(){
+        var login = document.getElementById('login');
+        login.onclick = function(){					
+            if(login.innerHTML=="登出系統")	{
+                let req=new XMLHttpRequest();
+                req.open("DELETE", "/api/user");
+                req.onload=function(){		
+                    var jsonObj = JSON.parse(this.responseText);						
+                    //alert(this.responseText);						
+                    if(Object.keys(jsonObj)[0] == "ok"){
+                        document.getElementById('login').innerHTML = "登入/註冊"
+                        alert("登出成功");
+                        index();
+                    }
+                    else{
+                        alert("登出失敗");
+                    }						
+                }
+                req.send();//送出連線
+            }
+        }
+    }
+
+    //刪除訂單
+    function Delete(){
+        let req=new XMLHttpRequest();
+        req.open("DELETE", "/api/booking");
+        req.onload=function(){		
+            var jsonObj = JSON.parse(this.responseText);
+            if(jsonObj['ok'] == true){
+                alert("您的預定訂單已刪除成功");
+
+                //重新整理
+                location.reload();
+            }						            						
+            
+        }
+        req.send();//送出連線
+            
+    }
+
+    //預定行程
+    function Order(){
+        //重新整理，因為已經在"預定行程"的頁面
+        location.reload();
+    }
+
+</script>
+
+<body style="margin:0px;" >    
+    <div class="titleall">
+        <div class="title">
+            <span onclick="index()">台北一日遊</span>
+        </div>
+        <div class="mintitle1">
+            <span onclick="Order()">預定行程</span>
+            &nbsp
+            <span><a id="login" style="color:#666666; text-decoration: none;" onclick="Logout()">登入/註冊</a></span>
+        </div>		
+    </div>
+    <hr size="1" noshade color="#E8E8E8" ></hr>
+    <div id="Info" style="display: none;">
+        <div class="booking_model">
+            <div class="text_hello text_bold">
+                <span id="name"></span>                
+            </div>
+            <div class="model1">
+                <div class="model2">
+                    <img id="img" class="img_size" style="border:#666666;"></img>
+                </div>
+                <div class="model2 model3">
+                    <span class="text_content text_bold text_taipei">台北一日遊：</span>
+                    <span id="txtstitle" class="text_content text_bold text_taipei">uq/60 1l3</span>
+                    <img src="/icon_delete.png" class="icon_delete" onclick="Delete()"></img>
+                    <br>
+                    <br>
+                    <span class="text_content text_bold">日期：</span>
+                        <span id="txtdate" class="text_content">2021-05-18</span>
+                    <br>
+                    <span class="text_content text_bold">時間：</span>
+                        <span id="txttime" class="text_content">早上9點到下午4點</span>
+                    <br>
+                    <span class="text_content text_bold">費用：</span>
+                        <span id="txtprice" class="text_content">新台幣2000元</span>
+                    <br>
+                    <span class="text_content text_bold">地點：</span>
+                        <span id="txtaddress" class="text_content">臺北市 大安區忠孝東路4段</span>
+                </div>
+            </div>
+        </div>
+        <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
+        <div class="booking_model line_height">
+            <span class="text_hello text_bold">您的聯絡資訊</span>
+            <br>
+            <span class="text_content">聯絡姓名：</span>
+                <input type="text" class="input_text"></input>
+            <br>
+            <span class="text_content">聯絡信箱：</span>
+                <input type="text" class="input_text"></input>
+            <br>
+            <span class="text_content">手機號碼：</span>
+                <input type="text" class="input_text"></input>
+            <br>
+            <span class="text_content text_bold">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</span>
+        </div>
+        <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
+        <div class="booking_model line_height">
+            <span class="text_hello text_bold">信用卡付款資訊</span>
+            <br>
+            <span class="text_content">卡片號碼：</span>
+                <input type="text" class="input_text" placeholder="**** **** **** ****"></input>
+            <br>
+            <span class="text_content">過期時間：</span>
+                <input type="text" class="input_text" placeholder="MM/YY"></input>
+            <br>
+            <span class="text_content">驗證密碼：</span>
+                <input type="text" class="input_text" placeholder="CVV"></input>
+        </div>
+        <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
+        <div class="booking_model line_height text_align">
+            <span class="text_content text_bold" id="txtmoney"></span>
+            <br>
+            <button class="text_hello button">確認訂購並付款</button>
+        </div>
+    </div>
+    <div id="NoInfo" style="display: none;">
+        <div class="booking_model line_height">
+            <div class="text_hello text_bold">
+                <span id="name1"></span>                
+            </div>
+            <span class="text_content">目前沒有任何待預訂的行程</span>
+        </div>
+    </div>    
+    <div class="bottommsg" id="bottommsg" style="height: 100%;">COPYRIGHT © 2021 台北一日遊</div>
+</body>
+</html>

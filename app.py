@@ -1,3 +1,4 @@
+from logging import NullHandler
 from flask import *
 import mysql.connector
 
@@ -220,29 +221,33 @@ def api_attractions_id(attractionId):
 		
 		return jsObj
 
-
-
 @app.route("/api/user",methods=["GET"])
-def api_user_get():
-	id = session['id']
-	name = session['name']
-	email = session['email']
-
-	if name !="" and email !="" and id !="":
-		data_info = {'data':{
-								'id':id,
-								'name':name,
-								'email':email
-							}
-					}							
-		jsObj = jsonify(data_info)				
-		return jsObj
-	else:
+def api_user_get():	
+	#print("0000000000000000000000000000000000000",str(session['id']))
+	#print("0000000000000000000000000000000000000",session['id'])
+	try:
+		id = session['id']
+		name = session['name']
+		email = session['email']
+		
+		if name !="" and email !="" and id !="":
+			data_info = {'data':{
+									'id':id,
+									'name':name,
+									'email':email
+								}
+						}							
+			jsObj = jsonify(data_info)				
+			return jsObj
+		else:
+			data_info = {'data':None}
+			jsObj = jsonify(data_info)				
+			return jsObj
+	#session抓不到值
+	except:
 		data_info = {'data':None}
 		jsObj = jsonify(data_info)				
 		return jsObj
-
-
 
 @app.route("/api/user",methods=["POST"])
 def api_user_post():
@@ -311,7 +316,7 @@ def api_user_patch():
 			else:
 				#print("elseelseelseleselselslelsel")
 				data_info = {'error':True,
-							'message':"沒有此會員"}
+							'message':"帳號或密碼錯誤"}
 				jsObj = jsonify(data_info)				
 				return jsObj
 					
@@ -331,6 +336,137 @@ def api_user_delete():
 	jsObj = jsonify(data_info) 		
 	return jsObj
 
+@app.route("/api/booking",methods=["GET"])
+def api_booking_get():
+	data_info = ""
+	img = []
+	try:
+		# if session['status'] == None:
+		# 	print("1231231321321321231465465")
+		# else: 
+		# 	print("錯誤")
+		if session['status'] == "已登入":		
+			with mydb.cursor() as cursor:
+				sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = '"+session['email'] + "'"
+				#sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = %s"
+				#val = (session['email'])			
+				cursor.execute(sql)
+				result = cursor.fetchall()		
+				
+				if(len(result) >0):
+					for row in result:
+						images = str(row[3]).split('http')	
+
+					#把圖片切割依序放在陣列					
+					for i in images[1:]:
+						img.append('http'+ i)					
+					#print("000000000000000000000000000", img)	
+							
+					data_info = {'data': {						
+									'attraction':{
+										'id': str(row[0]),
+										'name': str(row[1]),											
+										'address': str(row[2]),											
+										'image': img[0]
+									}
+								},
+								'date':str(row[4]),
+								'time':str(row[5]),
+								'price':str(row[6])
+							}
+					jsObj = jsonify(data_info)				
+					return jsObj
+
+				else:
+					data_info = {'data':None}
+					jsObj = jsonify(data_info)				
+					return jsObj	
+
+		else:
+			data_info = {'error':True,
+						'message':"請先登入會員"}
+			jsObj = jsonify(data_info)				
+			return jsObj
+	except:
+		data_info = {'error':True,
+						'message':"請先登入會員"}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+@app.route("/api/booking",methods=["POST"])
+def api_booking_post():
+	id = request.args.get("id")
+	date = request.args.get("txtdate")
+	time = request.args.get("txttime")
+	price = request.args.get("txtmoney")
+	count = 0
+	jsObj = ""
+	
+	try:
+		if session['status'] == "已登入":
+			with mydb.cursor() as cursor:				
+
+					sql = "Select Email From booking Where Email = '" + session['email'] + "'"  					
+					cursor.execute(sql)
+					result = cursor.fetchall()				
+
+					if len(result)>0:
+						sql = "Update booking Set attractionId = %s, date = %s, time = %s, price = %s Where Email = %s " 				
+						val = (id, date, time, price, session['email'])
+						cursor.execute(sql, val)
+						mydb.commit()
+						count = cursor.rowcount #回傳成功筆數
+						print("update: ", count)
+						mydb.close #關資料庫
+					else:
+						sql = "Insert Into booking(Email, attractionId, date, time, price) Values(%s, %s, %s, %s, %s) " 				
+						val = (session['email'], id, date, time, price)
+						cursor.execute(sql, val)
+						mydb.commit()
+						count = cursor.rowcount #回傳成功筆數
+						print("insert: ", count)
+						mydb.close #關資料庫
+
+					if count > 0:
+						data_info = {'ok':True}
+						jsObj = jsonify(data_info)
+						return jsObj
+					else:
+						data_info = {'error':True,
+						'message':'請勿重複預定行程'}
+						jsObj = jsonify(data_info)
+						return jsObj
+		else:
+			data_info = {'error':True,
+						'message':"請先登入會員"}
+			jsObj = jsonify(data_info)				
+			return jsObj
+
+	except:
+		data_info = {'error':True,
+					'message':"伺服器內部錯誤"}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+@app.route("/api/booking",methods=["DELETE"])
+def api_booking_delete():
+	if session['status'] == "已登入":
+		with mydb.cursor() as cursor:
+			sql = "Delete From booking Where Email = '" + session['email'] + "'"
+			#val = (session['email'])		
+			cursor.execute(sql)		
+			mydb.commit()	
+			mydb.close #關資料庫
+
+		data_info = {'ok':True}
+		jsObj = jsonify(data_info)
+		return jsObj
+		
+	else:
+		data_info = {'error':True,
+					'message':"請先登入會員"}
+		jsObj = jsonify(data_info)				
+		return jsObj
 
 
 

@@ -431,11 +431,10 @@
 
 			//呼叫後端api，確認登入狀態
 			Loginstatus();	
-
 			//載入圖片
-			let req2=new XMLHttpRequest();
-			req2.open("GET", "/api/attractions");
-			req2.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/attractions");
+			req.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];
@@ -497,11 +496,11 @@
 					boxdiv.appendChild(adddiv3);
 				}				
 			};
-			req2.send();//送出連線
+			req.send();//送出連線
 		
 
-			// 登入
-			Login();
+			//// 登入
+			//Login();
 			
 			var login_img = document.getElementById('login_img');
 			login_img.onclick = function(){	
@@ -539,9 +538,9 @@
 		}
 		//確認登入狀態
 		function Loginstatus(){
-			let req1=new XMLHttpRequest();
-			req1.open("GET", "/api/user");
-			req1.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/user");
+			req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);
 				//alert(this.responseText);
 				var value = jsonObj["data"];											
@@ -552,43 +551,42 @@
 					document.getElementById('login').innerHTML = "登入/註冊"
 				}						
 			}
-			req1.send();//送出連線
+			req.send();//送出連線
 		}
 
 		//登入
 		function Login(){
 			var login = document.getElementById('login');
-			login.onclick = function(){	
-				//清空輸入框
-				document.getElementById("txtEmail").value="";
-				document.getElementById("txtPassword").value="";
-				document.getElementById("errormsg").style.display="none";
-				//alert(login.innerHTML);
-				if(login.innerHTML=="登出系統")	{
-					let req3=new XMLHttpRequest();
-					req3.open("DELETE", "/api/user");
-					req3.onload=function(){		
-						var jsonObj = JSON.parse(this.responseText);						
-						//alert(this.responseText);						
-						if(Object.keys(jsonObj)[0] == "ok"){
-							document.getElementById('login').innerHTML = "登入/註冊"
-							alert("登出成功");
-							location.reload();//重新整理
-						}
-						else{
-							alert("登出失敗");
-						}						
+			
+			//清空輸入框
+			document.getElementById("txtEmail").value="";
+			document.getElementById("txtPassword").value="";
+			document.getElementById("errormsg").style.display="none";
+			//alert(login.innerHTML);
+			if(login.innerHTML=="登出系統")	{
+				let req=new XMLHttpRequest();
+				req.open("DELETE", "/api/user");
+				req.onload=function(){		
+					var jsonObj = JSON.parse(this.responseText);						
+					//alert(this.responseText);						
+					if(Object.keys(jsonObj)[0] == "ok"){
+						document.getElementById('login').innerHTML = "登入/註冊"
+						alert("登出成功");
+						location.reload();//重新整理
 					}
-					req3.send();//送出連線
+					else{
+						alert("登出失敗");
+					}						
 				}
-				else{
-					var hidebg = document.getElementById("hidebg");
-					hidebg.style.display="block";  //顯示隱藏層
-					hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
-					document.getElementById("Sign_in").style.display="block";  //顯示彈出層
-				}		
-				
+				req.send();//送出連線
 			}
+			else{
+				var hidebg = document.getElementById("hidebg");
+				hidebg.style.display="block";  //顯示隱藏層
+				hidebg.style.height=document.body.scrollHeight+"px";  //設置隱藏層的高度為當前頁面高度
+				document.getElementById("Sign_in").style.display="block";  //顯示彈出層
+			}			
+			
 		}
 
 		function Sign_in(txtEmail, txtPassword){
@@ -603,9 +601,9 @@
 				return
 			}	
 
-			let req4=new XMLHttpRequest();
-			req4.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
-			req4.onload=function(){				
+			let req=new XMLHttpRequest();
+			req.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+			req.onload=function(){				
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
 				//console.log(value);
@@ -626,7 +624,7 @@
 				}
 				//清空email,passwoed				
 			};
-			req4.send();
+			req.send();
 
 		}
 		function Sign_out(txtName_new, txtEmail_new, txtPassword_new){
@@ -643,9 +641,9 @@
 				return
 			}
 			
-			let req5=new XMLHttpRequest();
-			req5.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
-			req5.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+			req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
 				// console.log(value);
@@ -669,16 +667,16 @@
 				}
 				//清空email,passwoed
 			};
-			req5.send();
+			req.send();
 
 		}
 		
 		function keyword(keyw){
 			var a = document.getElementById("div1");
 			a.innerHTML = "";
-			let req6=new XMLHttpRequest();
-			req6.open("GET", "/api/attractions?page=0&keyword=" + keyw);
-			req6.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/attractions?page=0&keyword=" + keyw);
+			req.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];
@@ -746,7 +744,7 @@
 					document.getElementById("divnone").style.display="block"
 				}
 			};
-			req6.send();//送出連線
+			req.send();//送出連線
 		}
 
 
@@ -755,9 +753,9 @@
 		function loadimage(keyw, page){
 			getdata = true;//判斷滾輪是否重複load
 			
-			let req7=new XMLHttpRequest();
-			req7.open("GET", "/api/attractions?page=" + page + "&keyword=" + keyw);
-			req7.onload=function(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/attractions?page=" + page + "&keyword=" + keyw);
+			req.onload=function(){
 			//debugger;
 				var jsonObj = JSON.parse(this.responseText);
 				var value = jsonObj["data"];
@@ -822,12 +820,32 @@
 				}	
 				
 			}
-			req7.send();//送出連線
+			req.send();//送出連線
 			
 			
 		}
+
+		//預定行程
+		function Order(){
+			let req=new XMLHttpRequest();
+			req.open("GET", "/api/booking");
+			req.onload=function(){
+				var jsonObj = JSON.parse(this.responseText);	
+				if(jsonObj["error"] == true){
+					//未登入
+					alert("請先登入會員");
+					Login();
+				}		
+				else{
+					self.location = "/booking";
+				}
+				
+			}
+			req.send();		
+		}
 		
 	
+		//滾輪
 		window.addEventListener("scroll", ()=> {
 			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 			let key = document.getElementById("keyw").value;
@@ -849,9 +867,9 @@
 			<span >台北一日遊</span>
 		</div>
 		<div class="mintitle1">
-			<span >預定行程</span>
+			<span onclick="Order()">預定行程</span>
 			&nbsp
-			<span><a href="javascript:;" id="login" style="color:#666666; text-decoration: none;" >登入/註冊</a></span>
+			<span><a href="javascript:;" id="login" style="color:#666666; text-decoration: none;" onclick="Login()">登入/註冊</a></span>
 		</div>		
 	</div>
 	<!-- 彈出小視窗 -->
@@ -868,7 +886,7 @@
 						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail">
 					</div>
 					<div>
-						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword">			
+						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword">			
 					</div>
 					<div>
 						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)">登入帳戶</button>
@@ -896,7 +914,7 @@
 						<input type="text" class="login_input" placeholder="輸入電子信箱" id="txtEmail_new">
 					</div>
 					<div>
-						<input type="text" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
+						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
 					</div>
 					<div>
 						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)">註冊新帳戶</button>
