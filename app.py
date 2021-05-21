@@ -1,3 +1,4 @@
+from logging import NullHandler
 from flask import *
 import mysql.connector
 
@@ -220,26 +221,30 @@ def api_attractions_id(attractionId):
 		
 		return jsObj
 
-
-
 @app.route("/api/user",methods=["GET"])
 def api_user_get():	
 	#print("0000000000000000000000000000000000000",str(session['id']))
 	#print("0000000000000000000000000000000000000",session['id'])
-	id = session['id']
-	name = session['name']
-	email = session['email']
-	
-	if name !="" and email !="" and id !="":
-		data_info = {'data':{
-								'id':id,
-								'name':name,
-								'email':email
-							}
-					}							
-		jsObj = jsonify(data_info)				
-		return jsObj
-	else:
+	try:
+		id = session['id']
+		name = session['name']
+		email = session['email']
+		
+		if name !="" and email !="" and id !="":
+			data_info = {'data':{
+									'id':id,
+									'name':name,
+									'email':email
+								}
+						}							
+			jsObj = jsonify(data_info)				
+			return jsObj
+		else:
+			data_info = {'data':None}
+			jsObj = jsonify(data_info)				
+			return jsObj
+	#session抓不到值
+	except:
 		data_info = {'data':None}
 		jsObj = jsonify(data_info)				
 		return jsObj
@@ -335,46 +340,56 @@ def api_user_delete():
 def api_booking_get():
 	data_info = ""
 	img = []
-	if session['status'] == "已登入":
-		with mydb.cursor() as cursor:
-			sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = '"+session['email'] + "'"
-			#sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = %s"
-			#val = (session['email'])			
-			cursor.execute(sql)
-			result = cursor.fetchall()		
-			
-			if(len(result) >0):
-				for row in result:
-					images = str(row[3]).split('http')	
+	try:
+		if session['status'] == None:
+			print("1231231321321321231465465")
+		else: 
+			print("錯誤")
+		if session['status'] == "已登入":		
+			with mydb.cursor() as cursor:
+				sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = '"+session['email'] + "'"
+				#sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = %s"
+				#val = (session['email'])			
+				cursor.execute(sql)
+				result = cursor.fetchall()		
+				
+				if(len(result) >0):
+					for row in result:
+						images = str(row[3]).split('http')	
 
-				#把圖片切割依序放在陣列					
-				for i in images[1:]:
-					img.append('http'+ i)					
-				#print("000000000000000000000000000", img)	
-						
-				data_info = {'data': {						
-								'attraction':{
-									'id': str(row[0]),
-									'name': str(row[1]),											
-									'address': str(row[2]),											
-									'image': img[0]
-								}
-							},
-							'date':str(row[4]),
-							'time':str(row[5]),
-							'price':str(row[6])
-						}
-				jsObj = jsonify(data_info)				
-				return jsObj
+					#把圖片切割依序放在陣列					
+					for i in images[1:]:
+						img.append('http'+ i)					
+					#print("000000000000000000000000000", img)	
+							
+					data_info = {'data': {						
+									'attraction':{
+										'id': str(row[0]),
+										'name': str(row[1]),											
+										'address': str(row[2]),											
+										'image': img[0]
+									}
+								},
+								'date':str(row[4]),
+								'time':str(row[5]),
+								'price':str(row[6])
+							}
+					jsObj = jsonify(data_info)				
+					return jsObj
 
-			else:
-				data_info = {'data':None}
-				jsObj = jsonify(data_info)				
-				return jsObj
+				else:
+					data_info = {'data':None}
+					jsObj = jsonify(data_info)				
+					return jsObj	
 
-	else:
+		else:
+			data_info = {'error':True,
+						'message':"請先登入會員"}
+			jsObj = jsonify(data_info)				
+			return jsObj
+	except:
 		data_info = {'error':True,
-					'message':"請先登入會員"}
+						'message':"請先登入會員"}
 		jsObj = jsonify(data_info)				
 		return jsObj
 
