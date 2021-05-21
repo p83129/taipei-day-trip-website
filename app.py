@@ -341,10 +341,10 @@ def api_booking_get():
 	data_info = ""
 	img = []
 	try:
-		if session['status'] == None:
-			print("1231231321321321231465465")
-		else: 
-			print("錯誤")
+		# if session['status'] == None:
+		# 	print("1231231321321321231465465")
+		# else: 
+		# 	print("錯誤")
 		if session['status'] == "已登入":		
 			with mydb.cursor() as cursor:
 				sql = "Select A._id, A.stitle, A.Address, A.file, B.date, B.time, B.price From travel AS A left join booking AS B on(A._id = B.attractionId) Where B.Email = '"+session['email'] + "'"
