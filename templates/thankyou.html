@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=1.0" />
+<title>台北一日遊</title>
+<style type="text/css"> 
+    .titleall{
+        display: flex;
+        /* margin-left: 18%;
+        margin-right: 15%; */
+        width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .title{
+        margin:10px 0px;
+        color:#448899;
+        font-size:30px;
+        font-weight:bold;
+        line-height:34px;
+    }
+    .mintitle1{
+        margin-top: 20px;
+        color:#666666;
+        font-size:16px;			
+        line-height:13px;
+        position:relative;
+        left:75%;
+    }
+    .booking_model{         
+        width: 1000px;        
+        margin: 40px auto;        
+        
+    }
+    .line_height{
+        line-height: 50px;
+    }
+    .text_hello{
+        font-family: Noto Sans TC;
+        font-style: normal;  
+        font-weight: normal;      
+        font-size: 19px;
+        line-height: 16px;       
+        /* display: flex; */
+        align-items: center;
+        color: #666666;
+    }
+    .text_bold{
+        font-weight: bold;
+    }
+    .text_content{
+        font-family: Noto Sans TC;
+        font-style: normal;  
+        /* font-weight: normal; */
+        font-size: 16px;
+        line-height: 30px;      
+        /* display: flex; */
+        align-items: center;
+        color: #666666;
+    }
+    .bottommsg{
+        background: #757575;
+        /* height:104px; */
+        color:#FFFFFF;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 13px;
+        text-align:center;
+        margin-top: 30px;
+        padding: 5% 50px 60% 50px;
+    }
+    .content{
+        margin-left: auto;
+        margin-top: 40px;
+        margin: auto;
+        width: 800px;
+    }
+    .warn_img{
+        float: left;
+        margin-right: 5px;
+    }
+    .remind{
+        margin-top: 3px;
+        font-size: 15px;
+        width: 700px;
+        color: #A9A9A9;
+    }	 
+    /* 調整RWD */
+    @media screen and (min-width:1001px) and (max-width:1200px){
+        .titleall{
+            margin-left: 13%;
+            width: 80%;
+        }
+        .mintitle1{
+            left: 60%;
+        }
+        .booking_model{         
+            width: 70%;
+        }        
+    }
+    @media screen and (min-width:601px) and (max-width:1000px){
+        .titleall{            
+            width: 70%;
+        }
+        .booking_model{         
+            width: 70%;
+        }        
+        .mintitle1{
+            left: 55%;
+        }   
+        .content{
+            width: 80%;
+        }   
+        .remind{
+            width: 90%;
+        }  
+    }    
+    @media screen and (max-width:600px){
+        .titleall{            
+            width: 90%;
+        }
+        .mintitle1{
+            left: 10%;
+        }
+        .booking_model{         
+            width: 95%;
+        }
+        .content{
+            width:95%;
+        }
+        .remind{
+            width:95%;
+        }   
+        .warn_img{
+            height: 50px;
+        }   
+    }  
+</style>
+
+<script type="text/javascript">
+window.onload = function(){
+    //訂單編號
+    var orderNumber = location.search.substr(8);
+    document.getElementById('orderNumber').innerHTML = orderNumber;
+
+    //判斷登入狀態
+    let req=new XMLHttpRequest();
+    req.open("GET", "/api/user");
+    req.onload=function(){
+        var jsonObj = JSON.parse(this.responseText);
+        var value = jsonObj["data"];											
+        if(value != null){
+            
+            //已登入
+            document.getElementById('login').innerHTML = "登出系統";
+            	
+        }
+        else{
+            //未登入
+            alert("請先登入會員");
+            index();
+        }						
+    }
+    req.send();//送出連線
+}
+
+ //回首頁
+function index(){
+    self.location="/";
+}
+
+//預定行程
+function Order(){	
+    let req=new XMLHttpRequest();
+    req.open("GET", "/api/booking");
+    req.onload=function(){
+        var jsonObj = JSON.parse(this.responseText);	
+        if(jsonObj["error"] == true){
+            //未登入
+            alert("請先登入會員");
+            Login();
+        }		
+        else{
+            self.location = "/booking";
+        }
+        
+    }
+    req.send();		        
+}
+
+//登出回首頁
+function Logout(){
+    var login = document.getElementById('login');
+    login.onclick = function(){					
+        if(login.innerHTML=="登出系統")	{
+            let req=new XMLHttpRequest();
+            req.open("DELETE", "/api/user");
+            req.onload=function(){		
+                var jsonObj = JSON.parse(this.responseText);						
+                //alert(this.responseText);						
+                if(Object.keys(jsonObj)[0] == "ok"){
+                    document.getElementById('login').innerHTML = "登入/註冊"
+                    alert("登出成功");
+                    index();
+                }
+                else{
+                    alert("登出失敗");
+                }						
+            }
+            req.send();//送出連線
+        }
+    }
+}
+</script>
+
+<body style="margin:0px;" >    
+    <div class="titleall">
+        <div class="title">
+            <span onclick="index()">台北一日遊</span>
+        </div>
+        <div class="mintitle1">
+            <span onclick="Order()">預定行程</span>
+            &nbsp
+            <span><a id="login" style="color:#666666; text-decoration: none;" onclick="Logout()">登入/註冊</a></span>
+        </div>		
+    </div>
+    <hr size="1" noshade color="#E8E8E8" ></hr>    
+    <div class="content">
+        <div style="text-align: center;">
+            <img style="width: 100px;"src="/success_green(1).png"></img>
+        </div>
+        <p class="text_content text_bold" style="text-align:center; font-size:18px;">付款成功</p>
+        <hr size="1" noshade color="#E8E8E8" ></hr>
+        <p class="text_content text_bold" style="font-size: 18px;">訂單訊息</p>
+        <div style="margin-top:-20px;">
+            <p class="text_content text_bold">訂單編號：</p>
+        </div>
+        <div style="margin-top:-45px; margin-left: 80px;">
+            <span id="orderNumber" class="text_content text_bold" style="margin-top:-20px;"></span>
+        </div>
+        <div style="margin-top:10px;">
+            <span class="text_content text_bold" style="margin-top:-20px;">我們將盡速為您安排旅遊行程，請買家保持手機通訊暢通，以便行程安排完成能第一時間聯繫您。</span> 
+        </div>
+        <hr size="1" noshade color="#E8E8E8" ></hr>
+        <div class="warn_img">
+            <img style="width: 20px;"src="/!.png"></img>
+        </div>
+        <div class="remind text_bold">
+            <span>安全提醒：台北一日遊不會以任何理由要求您提供銀行卡信息或支付額外的費用，請謹防釣魚連接或詐騙電話。</span>  
+        </div>
+        <div class="warn_img">
+            <img style="width: 20px;"src="/!.png"></img>
+        </div>
+        <div class="remind text_bold">
+            <span>疫情提醒：因應疫情情況，請務必佩戴好口罩，保持安全距離，感謝您的配合。</span>  
+        </div>       
+    </div>
+    <div id="NoInfo" style="display: none;">
+        <div class="booking_model line_height">
+            <div class="text_hello text_bold">
+                <span id="name1"></span>                
+            </div>
+            <span class="text_content">目前沒有任何待預訂的行程</span>
+        </div>
+    </div>    
+    <div class="bottommsg" id="bottommsg" style="height: 100%;">COPYRIGHT © 2021 台北一日遊</div>
+</body>
+</html>
