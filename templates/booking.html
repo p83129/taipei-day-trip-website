@@ -220,6 +220,16 @@
 </style>
 
 <script type="text/javascript">
+    let data_price;
+    let data_id;
+    let data_stitle;
+    let data_address;  
+    let data_image;
+    let data_date;
+    let data_time;
+    let data_name; 
+    let data_email;      
+    
     window.onload = function() {
         //判斷登入狀態
         let req=new XMLHttpRequest();
@@ -235,6 +245,9 @@
                 name.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
                 var name1 = document.getElementById('name1');
                 name1.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
+
+                document.getElementById('user_name').value = value["name"];                
+                document.getElementById('user_email').value = value["email"];
                 //取得尚未確認下單的預定行程
                 GetBooking();
 
@@ -264,12 +277,15 @@
                 //圖片
                 var img = document.getElementById('img');
                 img.setAttribute("src", value["attraction"]["image"]);
+                data_image = value["attraction"]["image"];
                 //標題
                 var txtstitle = document.getElementById('txtstitle');
                 txtstitle.innerHTML = value["attraction"]["name"];
+                data_stitle = value["attraction"]["name"];
                 //日期
                 var txtdate = document.getElementById('txtdate');
                 txtdate.innerHTML = jsonObj["date"];
+                data_date = jsonObj["date"];
                 //時間
                 var txttime = document.getElementById('txttime');
                 if(jsonObj["time"] == "morning"){
@@ -278,16 +294,20 @@
                 else{
                     txttime.innerHTML = "下午2點到晚上9點";
                 }
-                
+                data_time = jsonObj["time"];
                 //費用
                 var txtprice = document.getElementById('txtprice');
                 txtprice.innerHTML = "新台幣" + jsonObj["price"] + "元";
+                data_price = jsonObj["price"];
                 //地點
                 var txtaddress = document.getElementById('txtaddress');
                 txtaddress.innerHTML = value["attraction"]["address"];
+                data_address = value["attraction"]["address"];
                 //總價
                 var txtmoney = document.getElementById('txtmoney');
                 txtmoney.innerHTML = "總價：新台幣" + jsonObj["price"] + "元";
+                //取景點id
+                data_id = value["attraction"]["id"];
                 
             }
             else{
@@ -406,10 +426,10 @@
             <span class="text_hello text_bold">您的聯絡資訊</span>
             <br>
             <span class="text_content">聯絡姓名：</span>
-                <input type="text" class="input_text"></input>
+                <input type="text" class="input_text" id="user_name"></input>
             <br>
             <span class="text_content">聯絡信箱：</span>
-                <input type="text" class="input_text"></input>
+                <input type="text" class="input_text" id="user_email"></input>
             <br>
             <span class="text_content">手機號碼：</span>
                 <input type="text" class="input_text" id="phone"></input>
@@ -623,20 +643,45 @@
 
     function orders(prime){
         var phone = document.getElementById('phone').value;
+        data_name = document.getElementById('user_name').value;                
+        data_email = document.getElementById('user_email').value;
+        alert(data_email);
         let req=new XMLHttpRequest();
-        req.open("POST", "/api/orders?phone=" + phone + "&prime=" + prime);
+        req.open("POST", "/api/orders");        
+        let orders={
+                    prime: prime,
+                    order: {
+                            price: data_price,
+                            trip: {
+                                attraction: {
+                                    id: data_id,
+                                    name: data_stitle,
+                                    address: data_address,
+                                    image: data_image
+                                },
+                                date: data_date,
+                                time: data_time
+                            },
+                            contact: {
+                                name: data_name,
+                                email: data_email,
+                                phone: phone
+                            }
+                        }
+                    }
+                                    
         req.onload=function(){
         var jsonObj = JSON.parse(this.responseText);				
         var value = jsonObj["data"];
-        if(value["payment"]['status'] == 0){
-            alert(value["payment"]['message']);            
+            if(value["payment"]['status'] == 0){
+                alert(value["payment"]['message']);                 
 
-            //感謝頁面            
-            Thank(value['number']);
+                //感謝頁面            
+                Thank(value['number']);
+            }
         }
-
-        }
-        req.send();
+        let data = JSON.stringify(orders);
+        req.send(data);
     }
 
     function Thank(number){

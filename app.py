@@ -8,9 +8,10 @@ from flask import request
 from flask import render_template
 from flask import url_for
 from flask import redirect
-from datetime import datetime
+from datetime import date, datetime
 import requests
 import urllib.request
+import json 
 
 
 app=Flask(__name__, static_url_path="/", static_folder="image")
@@ -474,101 +475,95 @@ def api_booking_delete():
 		return jsObj
 
 @app.route("/api/orders",methods=["POST"])
-def api_orders_post():
-	prime = request.args.get("prime")
-	phone = request.args.get("phone")
+def api_orders_post():	
+	data = json.loads(request.data)	
+	#print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~", data)
+	prime = str(data['prime'])
+	price = int(data['order']['price'])	
+	phone = str(data['order']['contact']['phone'])
+	name = str(data['order']['contact']['name'])
+	email = str(data['order']['contact']['email'])
+	attractionID = str(data['order']['trip']['attraction']['id'])
+	date = str(data['order']['trip']['date'])
+	time = str(data['order']['trip']['time'])
+	# prime = request.args.get("prime")
+	# phone = request.args.get("phone")
 	orderNumber = datetime.now().strftime('%Y%m%d%H%M%S%f') #訂單編號用當前時間來命名
 	#print("~~~~~~~~~~~~~~~~~~~~~", orderNumber)
 	status = 0
 	message = ""
 	try:
-		if session['status']=='已登入':
-			with mydb.cursor() as cursor:
+		if session['status']=='已登入':		
 
-				if orderNumber!=None:
-					sql = """	Select B.email, A.price, A.attractionID, A.date, A.time, B.name
-						From booking AS A 							
-							left join user AS B on(A.Email = B.Email)
-						Where A.Email = '""" + session['email'] + "'" 			
-					cursor.execute(sql)
-					result = cursor.fetchall()
-					mydb.close #關資料庫
-					#print("11111111111111111111111",result)
+			if orderNumber!=None:				
+				
+				if data != None:					
+					#串TapPay 的API
+					tappay_json={'prime':prime,
+						'partner_key':"partner_hN0LQnBJwfXVeKxxAsiNLUg6ZqaKOmqnZlngMFucyEOIBmTy0Un0rEGg",
+						'merchant_id':"p83120911_TAISHIN",
+						'details':"TapPay Test",
+						'amount':price,
+						'order_number':orderNumber,
+						'cardholder':{
+							'phone_number':phone,
+							'name':name,
+							'email':email									
+						},
+						'remember':True
+					}
 
-					if len(result) >0:
-						for row in result:
-							#print("2+2+2+2+2+2+2+2+")
-							#串TapPay 的API
-							tappay_json={'prime':prime,
-								'partner_key':"partner_hN0LQnBJwfXVeKxxAsiNLUg6ZqaKOmqnZlngMFucyEOIBmTy0Un0rEGg",
-								'merchant_id':"p83120911_TAISHIN",
-								'details':"TapPay Test",
-								'amount':int(row[1]),
-								'order_number':orderNumber,
-								'cardholder':{
-									'phone_number':str(phone),
-									'name':str(row[5]),
-									'email':str(row[0])									
-								},
-								'remember':True
-							}
-							body = str.encode(json.dumps(tappay_json))
-							#print("2222222222222222222222222",body)
-							url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
-							#api_key = '<your-api-key>'
-							headers = {'Content-Type':'application/json','x-api-key':'partner_hN0LQnBJwfXVeKxxAsiNLUg6ZqaKOmqnZlngMFucyEOIBmTy0Un0rEGg'}
+					body = str.encode(json.dumps(tappay_json))
+					print("2222222222222222222222222",body)
+					url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"					
+					headers = {'Content-Type':'application/json','x-api-key':'partner_hN0LQnBJwfXVeKxxAsiNLUg6ZqaKOmqnZlngMFucyEOIBmTy0Un0rEGg'}
 
-							# "urllib.request.Request(url, body, headers)" for Python 3.X
-							req = urllib.request.Request(url, body, headers)
-							#print("33333333333333333333333",req)
-							try:
-								# "urllib.request.urlopen(req)" for Python 3.X
-								response = urllib.request.urlopen(req)
+					req = urllib.request.Request(url, body, headers)
+					
+					try:						
+						response = urllib.request.urlopen(req)
+						result = response.read()
+						obj = json.loads(str(result,encoding='UTF-8'))								
+						#print("777777777777777777777777777777", obj['status'])
+						status = obj['status']
+						if status == 0:
+							message = "付款成功"
+						else:
+							message = "付款失敗"
 
-								result = response.read()
-								obj = json.loads(str(result,encoding='UTF-8'))
-								#print("444444444444444444",result)								
-								#print("777777777777777777777777777777", obj['status'])
-								status = obj['status']
-								if status == 0:
-									message = "付款成功"
-								else:
-									message = "付款失敗"								
-								
-							# "urllib.error.HTTPError as error" for Python 3.X
-							except urllib.request.HTTPError as error: 
-								print("The request failed with status code: " + str(error.code))
-
-								# Print the headers - they include the request ID and the timestamp, which are useful for debugging the failure
-								print("55555555555",error.info())
-								print("66666666666666",json.loads(error.read())) 
+					except urllib.request.HTTPError as error: 
+						print("The request failed with status code: " + str(error.code))
+						
+						print("55555555555",error.info())
+						print("66666666666666",json.loads(error.read())) 
 
 
-							#insert 訂單到資料庫中
-							sql = "Insert Into orders(email, phone, price, attractionID, date, time, status, orderNumber) Values(%s, %s, %s, %s, %s, %s, %s, %s)" 
-							val = (str(row[0]), phone, str(row[1]), str(row[2]), str(row[3]), str(row[4]), status, orderNumber)   
-							cursor.execute(sql, val)
-							mydb.commit()
-							mydb.close #關資料庫
-							count = cursor.rowcount #回傳成功筆數
-							print("insert: ", count)					
+					#insert 訂單到資料庫中
+					with mydb.cursor() as cursor:
+						sql = "Insert Into orders(email, phone, price, attractionID, date, time, status, orderNumber) Values(%s, %s, %s, %s, %s, %s, %s, %s)" 
+						val = (email, phone, price, attractionID, date, time, status, orderNumber)   
+						cursor.execute(sql, val)
+						mydb.commit()
+						mydb.close #關資料庫
+						count = cursor.rowcount #回傳成功筆數
+						#print("insert: ", count)					
 
-						data_info = {'data':{
-								'number':orderNumber,
-								'payment':{
-									'status':status,
-									'message':message
-								}
-							}
+				data_info = {'data':{
+						'number':orderNumber,
+						'payment':{
+							'status':status,
+							'message':message
 						}
-						#print("8888888888888888888888888", data_info)
-						jsObj = jsonify(data_info)				
-						return jsObj	
-				else:
-					data_info = {'error':True,
-						'message':"建立訂單失敗"}
-					jsObj = jsonify(data_info)				
-					return jsObj	
+					}
+				}
+				
+				jsObj = jsonify(data_info)				
+				return jsObj	
+			else:
+				data_info = {'error':True,
+					'message':"建立訂單失敗"}
+				jsObj = jsonify(data_info)				
+				return jsObj	
 
 		else:
 			data_info = {'error':True,
@@ -583,7 +578,7 @@ def api_orders_post():
 
 @app.route("/api/order/<orderNumber>",methods=["GET"])
 def api_order_get(orderNumber):	
-	print("111111111111111111111111111111111145646465")
+	# print("111111111111111111111111111111111145646465")
 	img = []
 	
 	if session['status']=='已登入':
@@ -629,7 +624,7 @@ def api_order_get(orderNumber):
 					}
 							
 					jsObj = jsonify(data_info)	
-					print("2222222222222222222222222222222222456465489")			
+					# print("2222222222222222222222222222222222456465489")			
 					return jsObj
 			else:
 				data_info = {"data": None}
