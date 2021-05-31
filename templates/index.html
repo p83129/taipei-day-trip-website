@@ -602,7 +602,12 @@
 			}	
 
 			let req=new XMLHttpRequest();
-			req.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+			req.open("PATCH", "/api/user");
+			let user={
+				email: txtEmail,
+  				password: txtPassword
+            }
+
 			req.onload=function(){				
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
@@ -624,7 +629,8 @@
 				}
 				//清空email,passwoed				
 			};
-			req.send();
+			let data = JSON.stringify(user);
+        	req.send(data);
 
 		}
 		function Sign_out(txtName_new, txtEmail_new, txtPassword_new){
@@ -642,7 +648,12 @@
 			}
 			
 			let req=new XMLHttpRequest();
-			req.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+			req.open("POST", "/api/user");
+			let user={
+				name:txtName_new,
+				email: txtEmail_new,
+  				password: txtPassword_new
+                }
 			req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
@@ -667,7 +678,8 @@
 				}
 				//清空email,passwoed
 			};
-			req.send();
+			let data = JSON.stringify(user);
+        	req.send(data);
 
 		}
 		

@@ -258,9 +258,13 @@ def api_user_get():
 @app.route("/api/user",methods=["POST"])
 def api_user_post():
 	#print("4564567845121456123")
-	Name = request.args.get("txtName_new")
-	Email = request.args.get("txtEmail_new")
-	Password = request.args.get("txtPassword_new")
+	# Name = request.args.get("txtName_new")
+	# Email = request.args.get("txtEmail_new")
+	# Password = request.args.get("txtPassword_new")
+	data = json.loads(request.data)
+	Name = str(data['name'])
+	Email = str(data['email'])
+	Password = str(data['password'])
 	
 	try:
 		with mydb.cursor() as cursor:
@@ -296,8 +300,11 @@ def api_user_post():
 def api_user_patch():	
 	#Email=request.form["txtEmail"]
 	#Password=request.form["txtPassword"]
-	Email = request.args.get("txtEmail")
-	Password = request.args.get("txtPassword")
+	# Email = request.args.get("txtEmail")
+	# Password = request.args.get("txtPassword")
+	data = json.loads(request.data)
+	Email = str(data['email'])
+	Password = str(data['password'])
 	#print("!!!!!!!!!!!!!!!!!!!!!!!", Email)
 	try:
 		with mydb.cursor() as cursor:
@@ -401,10 +408,15 @@ def api_booking_get():
 
 @app.route("/api/booking",methods=["POST"])
 def api_booking_post():
-	id = request.args.get("id")
-	date = request.args.get("txtdate")
-	time = request.args.get("txttime")
-	price = request.args.get("txtmoney")
+	# id = request.args.get("id")
+	# date = request.args.get("txtdate")
+	# time = request.args.get("txttime")
+	# price = request.args.get("txtmoney")
+	data = json.loads(request.data)
+	id = str(data['attractionId'])
+	date = str(data['date'])
+	time = str(data['time'])
+	price = str(data['price'])	
 	count = 0
 	jsObj = ""
 	
@@ -514,7 +526,7 @@ def api_orders_post():
 					}
 
 					body = str.encode(json.dumps(tappay_json))
-					print("2222222222222222222222222",body)
+					# print("2222222222222222222222222",body)
 					url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"					
 					headers = {'Content-Type':'application/json','x-api-key':'partner_hN0LQnBJwfXVeKxxAsiNLUg6ZqaKOmqnZlngMFucyEOIBmTy0Un0rEGg'}
 
