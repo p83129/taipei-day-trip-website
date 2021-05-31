@@ -332,25 +332,23 @@
 
     //登出回首頁
     function Logout(){
-        var login = document.getElementById('login');
-        login.onclick = function(){					
-            if(login.innerHTML=="登出系統")	{
-                let req=new XMLHttpRequest();
-                req.open("DELETE", "/api/user");
-                req.onload=function(){		
-                    var jsonObj = JSON.parse(this.responseText);						
-                    //alert(this.responseText);						
-                    if(Object.keys(jsonObj)[0] == "ok"){
-                        document.getElementById('login').innerHTML = "登入/註冊"
-                        alert("登出成功");
-                        index();
-                    }
-                    else{
-                        alert("登出失敗");
-                    }						
+        var login = document.getElementById('login');					
+        if(login.innerHTML=="登出系統")	{
+            let req=new XMLHttpRequest();
+            req.open("DELETE", "/api/user");
+            req.onload=function(){		
+                var jsonObj = JSON.parse(this.responseText);						
+                //alert(this.responseText);						
+                if(Object.keys(jsonObj)[0] == "ok"){
+                    document.getElementById('login').innerHTML = "登入/註冊"
+                    alert("登出成功");
+                    index();
                 }
-                req.send();//送出連線
+                else{
+                    alert("登出失敗");
+                }						
             }
+            req.send();//送出連線
         }
     }
 
@@ -437,7 +435,7 @@
             <span class="text_content text_bold">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</span>
         </div>
         <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
-    <form name="myform">
+    
         <div class="booking_model line_height">
             <span class="text_hello text_bold">信用卡付款資訊</span>
             <br>
@@ -460,7 +458,7 @@
             <br>
             <button type="submit" class="text_hello button" name="btn" onclick="aaaa(event)">確認訂購並付款</button>
         </div>
-    </form>
+    
     </div>
     <div id="NoInfo" style="display: none;">
         <div class="booking_model line_height">
@@ -520,7 +518,7 @@
         }
     })
 
-    var form1 = document.forms["myform"];
+    //var form1 = document.forms["myform"];
 	var btn = document.getElementsByClassName('.text_hello .button');
 	var cardtype1 = document.getElementById('cardtype');
 

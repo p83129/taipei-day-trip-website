@@ -191,25 +191,23 @@ function Order(){
 
 //登出回首頁
 function Logout(){
-    var login = document.getElementById('login');
-    login.onclick = function(){					
-        if(login.innerHTML=="登出系統")	{
-            let req=new XMLHttpRequest();
-            req.open("DELETE", "/api/user");
-            req.onload=function(){		
-                var jsonObj = JSON.parse(this.responseText);						
-                //alert(this.responseText);						
-                if(Object.keys(jsonObj)[0] == "ok"){
-                    document.getElementById('login').innerHTML = "登入/註冊"
-                    alert("登出成功");
-                    index();
-                }
-                else{
-                    alert("登出失敗");
-                }						
+    var Logout = document.getElementById('login');					
+    if(Logout.innerHTML=="登出系統")	{
+        let req=new XMLHttpRequest();
+        req.open("DELETE", "/api/user");
+        req.onload=function(){		
+            var jsonObj = JSON.parse(this.responseText);						
+            //alert(this.responseText);						
+            if(Object.keys(jsonObj)[0] == "ok"){
+                document.getElementById('login').innerHTML = "登入/註冊"
+                alert("登出成功");
+                index();
             }
-            req.send();//送出連線
+            else{
+                alert("登出失敗");
+            }						
         }
+        req.send();//送出連線
     }
 }
 </script>
@@ -222,7 +220,7 @@ function Logout(){
         <div class="mintitle1">
             <span onclick="Order()">預定行程</span>
             &nbsp
-            <span><a id="login" style="color:#666666; text-decoration: none;" onclick="Logout()">登入/註冊</a></span>
+            <span><a id="login" style="color:#666666; text-decoration: none;" onclick="Logout()">登入/註冊</a></span>            
         </div>		
     </div>
     <hr size="1" noshade color="#E8E8E8" ></hr>    
