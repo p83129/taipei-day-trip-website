@@ -602,7 +602,12 @@
 			}	
 
 			let req=new XMLHttpRequest();
-			req.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+			req.open("PATCH", "/api/user");
+			let user={
+				email: txtEmail,
+  				password: txtPassword
+            }
+
 			req.onload=function(){				
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
@@ -624,7 +629,8 @@
 				}
 				//清空email,passwoed				
 			};
-			req.send();
+			let data = JSON.stringify(user);
+        	req.send(data);
 
 		}
 		function Sign_out(txtName_new, txtEmail_new, txtPassword_new){
@@ -642,7 +648,12 @@
 			}
 			
 			let req=new XMLHttpRequest();
-			req.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+			req.open("POST", "/api/user");
+			let user={
+				name:txtName_new,
+				email: txtEmail_new,
+  				password: txtPassword_new
+                }
 			req.onload=function(){
 				var jsonObj = JSON.parse(this.responseText);				
 				var value = jsonObj["data"];
@@ -667,7 +678,8 @@
 				}
 				//清空email,passwoed
 			};
-			req.send();
+			let data = JSON.stringify(user);
+        	req.send(data);
 
 		}
 		
@@ -877,7 +889,7 @@
 		<div class="login" style="display: none;" id="Sign_in">
 			<div class="login_bgcolor"></div>
 			<div class="login_modal">
-				<form class="from">
+				<div class="from">
 					<div style="height:45px;">
 						<p id="h2">登入會員帳號</p>				
 						<img class="login_img" src="/icon_close.png" id="login_img"></img>
@@ -896,13 +908,13 @@
 						<p class="errormsg" id="errormsg"></p>
 						<span><a href="#" class="login_txt" id="login_txt">還沒有帳戶?點此註冊</a></span>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 		<div class="login" id="Sign_up" style="display: none; height: 330px;">
 			<div class="login_bgcolor"></div>
 			<div class="login_modal">
-				<form class="from">
+				<div class="from">
 					<div style="height:45px;">
 						<p id="h2">註冊會員帳號</p>				
 						<img  class="loginup_img" src="/icon_close.png" id="loginup_img"></img>
@@ -925,7 +937,7 @@
 						<p class="callrmsg" id="callrmsg"></p>
 						<span><a href="#" class="login_txt" id="loginup_txt">已經有帳戶了?點此登入</a></span>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>

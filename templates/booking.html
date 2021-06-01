@@ -115,6 +115,24 @@
     .hr{
         width: 1200px;
     }
+    /* 串金流 */
+    .tappay-field-focus {
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    }
+    .has-error .tappay-field-focus {
+        border-color: #843534;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+    }
+    .has-success .tappay-field-focus {
+        border-color: #2b542c;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
+    }
+    
 
     /* 調整RWD */
     @media screen and (min-width:1001px) and (max-width:1200px){
@@ -200,7 +218,18 @@
     
     
 </style>
+
 <script type="text/javascript">
+    let data_price;
+    let data_id;
+    let data_stitle;
+    let data_address;  
+    let data_image;
+    let data_date;
+    let data_time;
+    let data_name; 
+    let data_email;      
+    
     window.onload = function() {
         //判斷登入狀態
         let req=new XMLHttpRequest();
@@ -216,6 +245,9 @@
                 name.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
                 var name1 = document.getElementById('name1');
                 name1.innerHTML="您好，" +  value["email"] + "，待預訂的行程如下：";
+
+                document.getElementById('user_name').value = value["name"];                
+                document.getElementById('user_email').value = value["email"];
                 //取得尚未確認下單的預定行程
                 GetBooking();
 
@@ -245,12 +277,15 @@
                 //圖片
                 var img = document.getElementById('img');
                 img.setAttribute("src", value["attraction"]["image"]);
+                data_image = value["attraction"]["image"];
                 //標題
                 var txtstitle = document.getElementById('txtstitle');
                 txtstitle.innerHTML = value["attraction"]["name"];
+                data_stitle = value["attraction"]["name"];
                 //日期
                 var txtdate = document.getElementById('txtdate');
                 txtdate.innerHTML = jsonObj["date"];
+                data_date = jsonObj["date"];
                 //時間
                 var txttime = document.getElementById('txttime');
                 if(jsonObj["time"] == "morning"){
@@ -259,16 +294,20 @@
                 else{
                     txttime.innerHTML = "下午2點到晚上9點";
                 }
-                
+                data_time = jsonObj["time"];
                 //費用
                 var txtprice = document.getElementById('txtprice');
                 txtprice.innerHTML = "新台幣" + jsonObj["price"] + "元";
+                data_price = jsonObj["price"];
                 //地點
                 var txtaddress = document.getElementById('txtaddress');
                 txtaddress.innerHTML = value["attraction"]["address"];
+                data_address = value["attraction"]["address"];
                 //總價
                 var txtmoney = document.getElementById('txtmoney');
                 txtmoney.innerHTML = "總價：新台幣" + jsonObj["price"] + "元";
+                //取景點id
+                data_id = value["attraction"]["id"];
                 
             }
             else{
@@ -293,25 +332,23 @@
 
     //登出回首頁
     function Logout(){
-        var login = document.getElementById('login');
-        login.onclick = function(){					
-            if(login.innerHTML=="登出系統")	{
-                let req=new XMLHttpRequest();
-                req.open("DELETE", "/api/user");
-                req.onload=function(){		
-                    var jsonObj = JSON.parse(this.responseText);						
-                    //alert(this.responseText);						
-                    if(Object.keys(jsonObj)[0] == "ok"){
-                        document.getElementById('login').innerHTML = "登入/註冊"
-                        alert("登出成功");
-                        index();
-                    }
-                    else{
-                        alert("登出失敗");
-                    }						
+        var login = document.getElementById('login');					
+        if(login.innerHTML=="登出系統")	{
+            let req=new XMLHttpRequest();
+            req.open("DELETE", "/api/user");
+            req.onload=function(){		
+                var jsonObj = JSON.parse(this.responseText);						
+                //alert(this.responseText);						
+                if(Object.keys(jsonObj)[0] == "ok"){
+                    document.getElementById('login').innerHTML = "登入/註冊"
+                    alert("登出成功");
+                    index();
                 }
-                req.send();//送出連線
+                else{
+                    alert("登出失敗");
+                }						
             }
+            req.send();//送出連線
         }
     }
 
@@ -387,35 +424,41 @@
             <span class="text_hello text_bold">您的聯絡資訊</span>
             <br>
             <span class="text_content">聯絡姓名：</span>
-                <input type="text" class="input_text"></input>
+                <input type="text" class="input_text" id="user_name"></input>
             <br>
             <span class="text_content">聯絡信箱：</span>
-                <input type="text" class="input_text"></input>
+                <input type="text" class="input_text" id="user_email"></input>
             <br>
             <span class="text_content">手機號碼：</span>
-                <input type="text" class="input_text"></input>
+                <input type="text" class="input_text" id="phone"></input>
             <br>
             <span class="text_content text_bold">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</span>
         </div>
         <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
+    
         <div class="booking_model line_height">
             <span class="text_hello text_bold">信用卡付款資訊</span>
             <br>
-            <span class="text_content">卡片號碼：</span>
-                <input type="text" class="input_text" placeholder="**** **** **** ****"></input>
-            <br>
-            <span class="text_content">過期時間：</span>
-                <input type="text" class="input_text" placeholder="MM/YY"></input>
-            <br>
-            <span class="text_content">驗證密碼：</span>
-                <input type="text" class="input_text" placeholder="CVV"></input>
-        </div>
+            <div class="card-number-group" style="margin: 10px 0px">
+                <span class="text_content" style="float: left;" id="cardtype">卡片號碼：</span>
+                <div class="input_text" style="margin: 0px 90px;" id="card-number"></div>
+            </div>
+            <div class="expiration-date-group" style="margin: 10px 0px">
+                <span class="text_content" style="float: left;">過期時間：</span>
+                <div class="input_text" style="margin: 0px 90px;" id="card-expiration-date"></div>
+            </div>
+            <div class="cvc-group" style="margin: 10px 0px">
+                <span class="text_content" style="float: left;">驗證密碼：</span>
+                <div class="input_text" style="margin: 0px 90px;" id="card-ccv"></div>
+            </div>
+        </div>    
         <hr size="1" noshade color="#E8E8E8" class="hr"></hr>
         <div class="booking_model line_height text_align">
             <span class="text_content text_bold" id="txtmoney"></span>
             <br>
-            <button class="text_hello button">確認訂購並付款</button>
+            <button type="submit" class="text_hello button" name="btn" onclick="aaaa(event)">確認訂購並付款</button>
         </div>
+    
     </div>
     <div id="NoInfo" style="display: none;">
         <div class="booking_model line_height">
@@ -427,4 +470,233 @@
     </div>    
     <div class="bottommsg" id="bottommsg" style="height: 100%;">COPYRIGHT © 2021 台北一日遊</div>
 </body>
+
+
+
+
+<!-- TapPay串接金流 -->
+<script src="https://js.tappaysdk.com/tpdirect/v5.7.0"></script>   
+<script>
+    TPDirect.setupSDK(20462, 'app_9wwHhgtaFunjEDO1BbGZh6FcTR0IrpcvuzOQmwxWk6qBCMcVdWjbDmVaryjN', 'sandbox')
+    
+    TPDirect.card.setup({
+        fields: {
+            number: {
+                element: document.getElementById('card-number'),
+                placeholder: '**** **** **** ****'
+            },
+            expirationDate: {
+                element: document.getElementById('card-expiration-date'),
+                placeholder: 'MM / YY'
+            },
+            ccv: {
+                element: document.getElementById('card-ccv'),
+                placeholder: '後三碼'
+            }
+        },
+        styles: {
+            'input': {
+                'color': 'gray'
+            },
+            'input.ccv': {
+                // 'font-size': '16px'
+            },
+            ':focus': {
+                'color': 'black'
+            },
+            '.valid': {
+                'color': 'green'
+            },
+            '.invalid': {
+                'color': 'red'
+            },
+            '@media screen and (max-width: 400px)': {
+                'input': {
+                    'color': 'orange'
+                }
+            }
+        }
+    })
+
+    //var form1 = document.forms["myform"];
+	var btn = document.getElementsByClassName('.text_hello .button');
+	var cardtype1 = document.getElementById('cardtype');
+
+    TPDirect.card.onUpdate(function (update) {
+        /* Disable / enable submit button depend on update.canGetPrime  */
+        /* ============================================================ */
+
+        // update.canGetPrime === true
+        //     --> you can call TPDirect.card.getPrime()
+        // const submitButton = document.querySelector('button[type="submit"]')
+        if (update.canGetPrime) {
+            // submitButton.removeAttribute('disabled')
+            btn.removeAttr('disabled')
+        } else {
+            // submitButton.setAttribute('disabled', true)
+            btn.attr('disabled', true)
+        }
+
+
+        /* Change card type display when card type change */
+        /* ============================================== */
+
+        // cardTypes = ['visa', 'mastercard', ...]
+        var newType = update.cardType === 'unknown' ? '' : update.cardType
+        cardtype1.text(newType)
+
+
+
+        /* Change form-group style when tappay field status change */
+        /* ======================================================= */
+
+        // number 欄位是錯誤的
+        if (update.status.number === 2) {
+            setNumberFormGroupToError('.card-number-group')
+        } else if (update.status.number === 0) {
+            setNumberFormGroupToSuccess('.card-number-group')
+        } else {
+            setNumberFormGroupToNormal('.card-number-group')
+        }
+
+        if (update.status.expiry === 2) {
+            setNumberFormGroupToError('.expiration-date-group')
+        } else if (update.status.expiry === 0) {
+            setNumberFormGroupToSuccess('.expiration-date-group')
+        } else {
+            setNumberFormGroupToNormal('.expiration-date-group')
+        }
+
+        if (update.status.cvc === 2) {
+            setNumberFormGroupToError('.cvc-group')
+        } else if (update.status.cvc === 0) {
+            setNumberFormGroupToSuccess('.cvc-group')
+        } else {
+            setNumberFormGroupToNormal('.cvc-group')
+        }
+    })
+
+    function aaaa(e) {
+        //alert("3333333333333333333333333333333333");
+        e.preventDefault()
+
+        // 取得 TapPay Fields 的 status
+        const tappayStatus = TPDirect.card.getTappayFieldsStatus()
+
+        // 確認是否可以 getPrime
+        if (tappayStatus.canGetPrime === false) {
+            alert('請確認信用卡填寫是否正確')
+            return
+        }
+
+        // Get prime
+        TPDirect.card.getPrime((result) => {
+            if (result.status !== 0) {
+                alert('get prime error ' + result.msg)
+                return
+            }
+            else{
+                //alert('get prime 成功，prime: ' + result.card.prime)
+
+                //建立新的訂單，並完成付款程序
+                orders(result.card.prime);
+
+            }
+            
+            // send prime to your server, to pay with Pay by Prime API .
+            // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
+        })
+    }
+
+    function setNumberFormGroupToError(selector) {
+        document.getElementsByClassName('selector').addClass('has-error')
+        document.getElementsByClassName('selector').removeClass('has-success')
+    }
+
+    function setNumberFormGroupToSuccess(selector) {
+        document.getElementsByClassName('selector').removeClass('has-error')
+        document.getElementsByClassName('selector').addClass('has-success')
+    }
+
+    function setNumberFormGroupToNormal(selector) {
+        document.getElementsByClassName('selector').removeClass('has-error')
+        document.getElementsByClassName('selector').removeClass('has-success')
+    }
+    
+    function forceBlurIos() {
+        if (!isIos()) {
+            return
+        }
+        var input = document.createElement('input')
+        input.setAttribute('type', 'text')
+        // Insert to active element to ensure scroll lands somewhere relevant
+        document.activeElement.prepend(input)
+        input.focus()
+        input.parentNode.removeChild(input)
+    }
+    
+    function isIos() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    }
+
+    function orders(prime){
+        var phone = document.getElementById('phone').value;
+        data_name = document.getElementById('user_name').value;                
+        data_email = document.getElementById('user_email').value;
+        //alert(data_email);
+        let req=new XMLHttpRequest();
+        req.open("POST", "/api/orders");        
+        let orders={
+                    prime: prime,
+                    order: {
+                            price: data_price,
+                            trip: {
+                                attraction: {
+                                    id: data_id,
+                                    name: data_stitle,
+                                    address: data_address,
+                                    image: data_image
+                                },
+                                date: data_date,
+                                time: data_time
+                            },
+                            contact: {
+                                name: data_name,
+                                email: data_email,
+                                phone: phone
+                            }
+                        }
+                    }
+                                    
+        req.onload=function(){
+        var jsonObj = JSON.parse(this.responseText);				
+        var value = jsonObj["data"];
+            if(value["payment"]['status'] == 0){
+                alert(value["payment"]['message']);                 
+
+                //感謝頁面            
+                Thank(value['number']);
+            }
+        }
+        let data = JSON.stringify(orders);
+        req.send(data);
+    }
+
+    function Thank(number){
+        let req=new XMLHttpRequest();
+        req.open("GET", "/api/order/" + number);
+        req.onload=function(){
+            var jsonObj = JSON.parse(this.responseText);
+            if(jsonObj['data'] != null){
+                self.location="/thankyou?number=" + number;
+            }
+
+        }				
+        req.send();
+    }
+
+    
+</script>
+<!--  -->
+
 </html>

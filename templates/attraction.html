@@ -874,30 +874,35 @@
 			}	
 			else{
 				let req=new XMLHttpRequest();
-				req.open("PATCH", "/api/user?txtEmail=" + txtEmail + "&txtPassword=" + txtPassword);
+				req.open("PATCH", "/api/user");
+				let user={
+					email: txtEmail,
+					password: txtPassword
+            	}
 				req.onload=function(){				
-				var jsonObj = JSON.parse(this.responseText);				
-				var value = jsonObj["data"];
-				//console.log(value);
-				//alert(this.responseText);				
-				//alert(Object.keys(jsonObj)[0]);
-				if(Object.keys(jsonObj)[0] != "error"){	
-					document.getElementById("Sign_in").style.display="none";
-					document.getElementById("hidebg").style.display="none";				
-					document.getElementById('login').innerHTML = "登出系統";
-					location.reload();//重新整理
-				}
-				else{
-					//出錯誤訊息
-					document.getElementById("txtEmail").value="";
-					document.getElementById("txtPassword").value="";					
-					document.getElementById('errormsg').innerHTML = jsonObj["message"];
-					document.getElementById('errormsg').style.display = "block";
-					
-				}
+					var jsonObj = JSON.parse(this.responseText);				
+					var value = jsonObj["data"];
+					//console.log(value);
+					//alert(this.responseText);				
+					//alert(Object.keys(jsonObj)[0]);
+					if(Object.keys(jsonObj)[0] != "error"){	
+						document.getElementById("Sign_in").style.display="none";
+						document.getElementById("hidebg").style.display="none";				
+						document.getElementById('login').innerHTML = "登出系統";
+						location.reload();//重新整理
+					}
+					else{
+						//出錯誤訊息
+						document.getElementById("txtEmail").value="";
+						document.getElementById("txtPassword").value="";					
+						document.getElementById('errormsg').innerHTML = jsonObj["message"];
+						document.getElementById('errormsg').style.display = "block";
+						
+					}
 				//清空email,passwoed				
-			};
-			req.send();
+				}
+				let data = JSON.stringify(user);
+				req.send(data);
 			}
 
 			
@@ -918,32 +923,39 @@
 			}
 			else{
 				let req=new XMLHttpRequest();
-				req.open("POST", "/api/user?txtName_new=" + txtName_new + "&txtEmail_new=" + txtEmail_new + "&txtPassword_new=" + txtPassword_new);
+				req.open("POST", "/api/user");
+				let user={
+					name:txtName_new,
+					email: txtEmail_new,
+					password: txtPassword_new
+                }
 				req.onload=function(){
-				var jsonObj = JSON.parse(this.responseText);				
-				var value = jsonObj["data"];
-				// console.log(value);
-				// alert(this.responseText);				
-				//alert(Object.keys(jsonObj)[0]);
-				if(Object.keys(jsonObj)[0] != "error"){		
-					document.getElementById("txtName_new").value="";
-					document.getElementById("txtEmail_new").value="";
-					document.getElementById("txtPassword_new").value="";
-					document.getElementById('callrmsg').style.color="green";			
-					document.getElementById('callrmsg').innerHTML = "註冊成功";					
-				}
-				else{
-					//出錯誤訊息
-					document.getElementById("txtName_new").value="";
-					document.getElementById("txtEmail_new").value="";
-					document.getElementById("txtPassword_new").value="";					
-					document.getElementById('callrmsg').innerHTML = jsonObj["message"];
-					document.getElementById('callrmsg').style.color="red";
-					document.getElementById('callrmsg').style.display = "block";					
-				}
+					var jsonObj = JSON.parse(this.responseText);				
+					var value = jsonObj["data"];
+					// console.log(value);
+					// alert(this.responseText);				
+					//alert(Object.keys(jsonObj)[0]);
+					if(Object.keys(jsonObj)[0] != "error"){		
+						document.getElementById("txtName_new").value="";
+						document.getElementById("txtEmail_new").value="";
+						document.getElementById("txtPassword_new").value="";
+						document.getElementById('callrmsg').style.color="green";			
+						document.getElementById('callrmsg').innerHTML = "註冊成功";					
+					}
+					else{
+						//出錯誤訊息
+						document.getElementById("txtName_new").value="";
+						document.getElementById("txtEmail_new").value="";
+						document.getElementById("txtPassword_new").value="";					
+						document.getElementById('callrmsg').innerHTML = jsonObj["message"];
+						document.getElementById('callrmsg').style.color="red";
+						document.getElementById('callrmsg').style.display = "block";					
+					}
 				//清空email,passwoed
-			};
-			req.send();
+				}
+				let data = JSON.stringify(user);
+				req.send(data);
+
 			}
 		}
 
@@ -968,7 +980,13 @@
 				}
 
 				let req=new XMLHttpRequest();
-				req.open("POST", "/api/booking?id=" + id + "&txtdate=" + txtdate + "&txttime=" + txttime + "&txtmoney=" + txtmoney);
+				req.open("POST", "/api/booking");
+				let booking={
+					attractionId: id,
+					date: txtdate,
+					time: txttime,
+					price: txtmoney
+                }
 				req.onload=function(){
 					var jsonObj = JSON.parse(this.responseText);	
 					if(jsonObj["ok"] == true){
@@ -982,7 +1000,8 @@
 						Login();
 					}
 				}
-				req.send();
+				let data = JSON.stringify(booking);
+        		req.send(data);
 
 			}
 			else{
@@ -1034,7 +1053,7 @@
 		<div class="login" style="display: none;" id="Sign_in">
 			<div class="login_bgcolor"></div>
 			<div class="login_modal">
-				<form class="from">
+				<div class="from">
 					<div style="height:45px;">
 						<p id="h2">登入會員帳號</p>				
 						<img class="login_img" src="/icon_close.png" id="login_img"></img>
@@ -1053,13 +1072,13 @@
 						<p class="errormsg" id="errormsg"></p>
 						<span><a href="#" class="login_txt" id="login_txt">還沒有帳戶?點此註冊</a></span>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 		<div class="login" id="Sign_up" style="display: none; height: 330px;">
 			<div class="login_bgcolor"></div>
 			<div class="login_modal">
-				<form class="from">
+				<div class="from">
 					<div style="height:45px;">
 						<p id="h2">註冊會員帳號</p>				
 						<img  class="loginup_img" src="/icon_close.png" id="loginup_img"></img>
@@ -1082,7 +1101,7 @@
 						<p class="callrmsg" id="callrmsg"></p>
 						<span><a href="#" class="login_txt" id="loginup_txt">已經有帳戶了?點此登入</a></span>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
