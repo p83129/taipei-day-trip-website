@@ -1040,10 +1040,10 @@
 	<div id="hidebg"></div>	
 	<div class="titleall">
 		<div class="title">
-			<span onclick="index()">台北一日遊</span>
+			<span><a href="#" style="color:#448899;text-decoration: none;" onclick="index()">台北一日遊</a></span>
 		</div>
 		<div class="mintitle1">
-			<span onclick="Order()">預定行程</span>
+			<span><a href="#" style="color:#666666; text-decoration: none;" onclick="Order()">預定行程</a></span>
 			&nbsp
 			<span><a href="#" id="login" style="color:#666666; text-decoration: none;" onclick="Login()">登入/註冊</a></span>
 		</div>		
@@ -1065,7 +1065,7 @@
 						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword">			
 					</div>
 					<div>
-						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)">登入帳戶</button>
+						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)"><a href="#" style="color:#FFFFFF;text-decoration: none;">登入帳戶</a></button>
 					</div>
 					<!-- 顯示錯誤訊息 -->
 					<div style="margin-top: 18px;">
@@ -1093,7 +1093,7 @@
 						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
 					</div>
 					<div>
-						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)">註冊新帳戶</button>
+						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)"><a href="#" style="color:#FFFFFF;text-decoration: none;">註冊新帳戶</a></button>
 					</div>
 					
 					<!-- 顯示錯誤訊息 -->
@@ -1133,17 +1133,17 @@
 					<span>選擇時間:</span>
 						<label>
 							<input type="radio" id="txtam" checked name="daytime" class="demoHidden" onclick="Money('AM')">
-								<span class="radioInput" ></span>上半天 
+								<span class="radioInput"></span>上半天
 						</label>
 						<label>
 							<input type="radio" id="txtpm" name="daytime" class="demoHidden" onclick="Money('PM')">
-							  <span class="radioInput" ></span>下半天 
+							  <span class="radioInput" ></span>下半天
 						</label>
 					<br>
 					<span>導覽費用:</span>
 						<span id="money1" style="font-weight:normal;">新台幣2000元</span>
 					<br>
-					<button class="btn" onclick="Booking()">開始預訂行程</button>
+					<button class="btn" onclick="Booking()"><a href="#" style="color:#FFFFFF;text-decoration: none;">開始預訂行程</a></button>
 				</div>
 			</div>
 		</div>
