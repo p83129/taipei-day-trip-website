@@ -13,6 +13,14 @@ import requests
 import urllib.request
 import json 
 
+#AWS S3
+import boto3
+# from botocore.exceptions import ClientError
+#AWS RDS Connect
+import pymysql
+import os
+
+
 
 app=Flask(__name__, static_url_path="/", static_folder="image")
 app.config["JSON_AS_ASCII"]=False
@@ -36,13 +44,27 @@ def booking():
 def thankyou():
 	return render_template("thankyou.html")
 
+@app.route("/Upload-Image")
+def UploadImage():
+	return render_template("Upload-Image.html")
 
+dbconfig = {
+  "database":"website",
+  "user":"root",
+  "password":"qaz4545112"
+}
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="qaz4545112",
-  database="website"
+	pool_name = "mypool",
+	pool_size = 3,
+	**dbconfig
 )
+
+# mydb = mysql.connector.connect(
+#   host="localhost",
+#   user="root",
+#   password="qaz4545112",
+#   database="website"
+# )
 
 @app.route("/api/attractions",methods=["GET"])
 def api_attractions():
@@ -647,6 +669,117 @@ def api_order_get(orderNumber):
 						'message':"請先登入會員"}
 		jsObj = jsonify(data_info)				
 		return jsObj
+
+#AWS S3
+
+rds_host="database-rds.cadwklykzixp.ap-northeast-1.rds.amazonaws.com"
+rds_user="admin"
+rds_password="qaz4545112"
+rds_database="RDSTest"
+rds_port="3306"
+
+# if rds_host in os.environ:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': rds_database,
+#             'USER': rds_user,
+#             'PASSWORD': rds_password,
+#             'HOST': rds_host,
+#             'PORT': rds_port,
+#         }
+#     }
+
+ACCESS_KEY = 'AKIA4Y23VAHZ32B7QG5O'
+SECRET_KEY = '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'
+@app.route("/api/message",methods=["POST"])
+def upload_file():	
+
+	image = request.files["file"]
+	text = request.form['text']
+	image_name = request.form['filename']
+	print("~~~~~~~~~~~~~~~~~~", text)
+	
+	bucket = "s3mytestbucket2021"
+	object_name = None
+	# If S3 object_name was not specified, use file_name
+	if object_name is None:	
+		object_name = image_name
+
+	# Upload the file
+	#s3_client = boto3.client('s3', region_name='ap-northeast-1')
+	s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)	
+	
+	try:		
+		#response =s3_client.meta.client.upload_file(file_name, bucket, object_name)		
+		s3_client.upload_fileobj(Fileobj=image, Bucket=bucket, Key=image_name)		
+		# file_url = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, object_name) 
+		file_url = 'https://d3ctywf3vouc7n.cloudfront.net/' + image_name
+		
+		#RDS Connect
+		connection = pymysql.connect(host=rds_host, user=rds_user, passwd=rds_password, db=rds_database)
+		with connection.cursor() as cursor:		
+
+			sql = "INSERT INTO uploaddata (textinfo, imginfo) VALUES (%s, %s)"
+			val = (text, file_url)
+				
+			cursor.execute(sql,val)
+			connection.commit()
+			count = cursor.fetchall()
+			print(count)
+			connection.close 
+
+		data_info = {'message':"上傳成功"}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+	except Exception as e:
+		#logging.error(e)
+		print("post_的錯誤訊息: ",e)
+		data_info = {'message':"上傳失敗"}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+@app.route("/api/message",methods=["GET"])
+def get_upload_file():
+	json_array =[]
+	connection = pymysql.connect(host=rds_host, user=rds_user, passwd=rds_password, db=rds_database)
+	try:		
+		with connection.cursor() as cursor:	
+			sql = "SELECT * FROM uploaddata ORDER BY id DESC "				
+			cursor.execute(sql)
+			connection.commit()		
+			result = cursor.fetchall()
+			connection.close 
+
+			if len(result) >0:
+				for row in result:
+					json_list = {}
+
+					text = str(row[1])				
+					img = str(row[2])
+
+					json_list['text'] = text
+					json_list['img'] = img
+
+					json_array.append(json_list)
+				
+				data_info = {'success':True,
+								'data': json_array}
+				jsObj = jsonify(data_info) 	
+
+				return jsObj
+
+	except Exception as e:		
+		print("get_的錯誤訊息: ",e)
+
+		data_info = {'error':True,'data':'上傳發生錯誤'}
+		jsObj = jsonify(data_info)				
+		return jsObj
+
+	
+	
+
 
 
 

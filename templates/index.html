@@ -664,8 +664,9 @@
 					document.getElementById("txtName_new").value="";
 					document.getElementById("txtEmail_new").value="";
 					document.getElementById("txtPassword_new").value="";
-					document.getElementById('callrmsg').style.color="green";			
-					document.getElementById('callrmsg').innerHTML = "註冊成功";					
+					document.getElementById('callrmsg').innerHTML = "註冊成功";
+					document.getElementById('callrmsg').style.color="green";
+					alert("!!!!!!");			
 				}
 				else{
 					//出錯誤訊息
@@ -876,10 +877,10 @@
 	<div id="hidebg"></div>
 	<div class="titleall">
 		<div class="title">
-			<span >台北一日遊</span>
+			<span>台北一日遊</span>
 		</div>
 		<div class="mintitle1">
-			<span onclick="Order()">預定行程</span>
+			<span><a href="#" style="color:#666666; text-decoration: none;" onclick="Order()">預定行程</a></span>
 			&nbsp
 			<span><a href="javascript:;" id="login" style="color:#666666; text-decoration: none;" onclick="Login()">登入/註冊</a></span>
 		</div>		
@@ -901,7 +902,7 @@
 						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword">			
 					</div>
 					<div>
-						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)">登入帳戶</button>
+						<button class="login_btn" onclick="Sign_in(getElementById('txtEmail').value, getElementById('txtPassword').value)"><a href="#" style="color:#FFFFFF;text-decoration: none;">登入帳戶</a></button>
 					</div>
 					<!-- 顯示錯誤訊息 -->
 					<div style="margin-top: 18px;">
@@ -929,7 +930,7 @@
 						<input type="password" class="login_input" placeholder="輸入密碼" id="txtPassword_new">			
 					</div>
 					<div>
-						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)">註冊新帳戶</button>
+						<button class="login_btn" onclick="Sign_out(getElementById('txtName_new').value, getElementById('txtEmail_new').value, getElementById('txtPassword_new').value)"><a href="#" style="color:#FFFFFF;text-decoration: none;">註冊新帳戶</a></button>
 					</div>
 					
 					<!-- 顯示錯誤訊息 -->
@@ -949,7 +950,7 @@
 			<div class="introduction3">
 				<input type="text" id="keyw" placeholder="輸入景點名稱查詢" class="inputtxt" style="padding-left:15px;"></input>
 				<button class="search-btn" onclick="keyword(getElementById('keyw').value)">
-					<img src="/icon_search.png">
+					<a href="#"><img src="/icon_search.png"></a>
 				</button>
 			</div>
 		</div>
